@@ -8,7 +8,7 @@ class Insumo extends Model
 {
     protected $table= 'insumos';
 
-    protected $filleable=['nombre','tipo_insumo','cantidad','descripcion','lugar_almacen','estado'];
+    protected $filleable=['nombre','tipoInsumo','cantidad','descripcion','lugarAlmacen','estado', 'stock'];
 
     public function insumoEvento(){
         return $this->hasMany('InsumoEvento::class');

@@ -2,106 +2,73 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\Evento;
+use App\Services\EventoService;
 
 class EventoController extends Controller
 {
-    // Listar eventos según el rol
-    public function index()
-    {
-        $user = Auth::user();
+    protected $eventoService;
 
-        if ($user->rol === 'administrador') {
-            $eventos = Evento::all(); // Admin ve todos los eventos
-        } elseif ($user->rol === 'empleado') {
-            $eventos = Evento::whereHas('eventoEmpleado', function ($query) use ($user) {
-                $query->where('empleado_id', $user->id);
-            })->get(); // Empleado ve solo los eventos asignados
-        } else {
-            return response()->json(['message' => 'Acceso no autorizado'], 403);
-        }
+    public function __construct(EventoService $eventoService)
+    {
+        $this->eventoService = $eventoService;
+    }
+
+    // Obtener todos los eventos según el rol del usuario
+    public function index(Request $request)
+    {
+        $usuario = $request->user();
+        $eventos = $this->eventoService->getAllEventos($usuario);
 
         return response()->json($eventos);
     }
 
-    // Crear un evento (solo admin)
-    public function store(Request $request)
-    {
-        $user = Auth::user();
-
-        if ($user->rol !== 'administrador') {
-            return response()->json(['message' => 'Acceso no autorizado'], 403);
-        }
-
-        $data = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'fecha' => 'required|date',
-            'num_invitados' => 'required|integer',
-        ]);
-
-        $evento = Evento::create($data);
-
-        return response()->json($evento, 201);
-    }
-
-    // Mostrar un evento específico
+    // Obtener un evento específico por ID
     public function show($id)
     {
-        $user = Auth::user();
-        $evento = Evento::findOrFail($id);
-
-        // Validar acceso según rol
-        if ($user->rol === 'administrador') {
-            return response()->json($evento); // Admin puede ver cualquier evento
-        } elseif ($user->rol === 'empleado') {
-            // Empleado solo puede ver eventos asignados
-            $asignado = $evento->eventoEmpleado->contains('empleado_id', $user->id);
-            if ($asignado) {
-                return response()->json($evento);
-            }
-        }
-
-        return response()->json(['message' => 'Acceso no autorizado'], 403);
-    }
-
-    // Actualizar un evento (solo admin)
-    public function update(Request $request, $id)
-    {
-        $user = Auth::user();
-
-        if ($user->rol !== 'administrador') {
-            return response()->json(['message' => 'Acceso no autorizado'], 403);
-        }
-
-        $data = $request->validate([
-            'nombre' => 'string|max:255',
-            'descripcion' => 'string',
-            'fecha' => 'date',
-            'num_invitados' => 'integer',
-        ]);
-
-        $evento = Evento::findOrFail($id);
-        $evento->update($data);
+        $evento = $this->eventoService->getEventoByid($id);
 
         return response()->json($evento);
     }
 
-    // Eliminar un evento (solo admin)
+    // Crear un nuevo evento
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+        ]);
+
+        $evento = $this->eventoService->createEvento($data);
+
+        return response()->json($evento, 201); // 201 Created
+    }
+
+    // Actualizar un evento existente
+    public function update($id, Request $request)
+    {
+        $data = $request->validate([
+            'nombre' => 'sometimes|required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'fecha_inicio' => 'sometimes|required|date',
+            'fecha_fin' => 'sometimes|required|date|after_or_equal:fecha_inicio',
+        ]);
+
+        $evento = $this->eventoService->updateEvento($id, $data);
+
+        return response()->json([
+            'message' => 'Evento actualizado con éxito',
+            'data' => $evento,
+        ]);
+    }
+
+    // Eliminar un evento
     public function destroy($id)
     {
-        $user = Auth::user();
-
-        if ($user->rol !== 'administrador') {
-            return response()->json(['message' => 'Acceso no autorizado'], 403);
-        }
-
-        $evento = Evento::findOrFail($id);
-        $evento->delete();
+        $this->eventoService->deleteEvento($id);
 
         return response()->json(['message' => 'Evento eliminado con éxito']);
     }
 }
-

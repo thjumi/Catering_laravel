@@ -8,7 +8,7 @@ class InsumoEvento extends Model
 {
     protected $table='insumoEvento';
 
-    protected $fillable = ['insumo_id','evento_id'];
+    protected $fillable = ['insumo_id','evento_id', 'cantidad'];
 
     public function evento(){
         return $this->belongsTo(Evento::class);

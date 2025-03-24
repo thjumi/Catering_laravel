@@ -2,64 +2,73 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tarea;
 use Illuminate\Http\Request;
+use App\Services\TareaService;
 
 class TareaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $tareaService;
+
+    public function __construct(TareaService $tareaService)
     {
-        //
+        $this->tareaService = $tareaService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Obtener todas las tareas según el rol del usuario
+    public function index(Request $request)
     {
-        //
+        $usuario = $request->user();
+        $tareas = $this->tareaService->getAllTareas($usuario);
+
+        return response()->json($tareas);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Obtener una tarea específica por ID
+    public function show($id, Request $request)
+    {
+        $usuario = $request->user();
+        $tarea = $this->tareaService->getTareaById($id, $usuario);
+
+        return response()->json($tarea);
+    }
+
+    // Crear una nueva tarea
     public function store(Request $request)
     {
-        //
+        $usuario = $request->user();
+        $data = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'fecha_tarea' => 'required|date',
+        ]);
+
+        $tarea = $this->tareaService->createTarea($data, $usuario);
+
+        return response()->json($tarea, 201); // 201 Created
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Tarea $tarea)
+    // Actualizar una tarea existente
+    public function update($id, Request $request)
     {
-        //
+        $usuario = $request->user();
+        $data = $request->validate([
+            'nombre' => 'sometimes|required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'fecha_tarea' => 'sometimes|required|date',
+        ]);
+
+        $tarea = $this->tareaService->updateTarea($id, $data, $usuario);
+
+        return response()->json($tarea);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Tarea $tarea)
+    // Eliminar una tarea
+    public function destroy($id, Request $request)
     {
-        //
-    }
+        $usuario = $request->user();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Tarea $tarea)
-    {
-        //
-    }
+        $this->tareaService->deleteTarea($id, $usuario);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Tarea $tarea)
-    {
-        //
+        return response()->json(['message' => 'Tarea eliminada con éxito']);
     }
 }

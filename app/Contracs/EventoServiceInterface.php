@@ -4,9 +4,9 @@ namespace App\Contracts;
 
 interface EventoServiceInterface
 {
-    public function obtenerEventos($usuario);
-    public function obtenerEventoPorId($id);
-    public function crearEvento(array $data);
-    public function actualizarEvento($id, array $data);
-    public function eliminarEvento($id);
+    public function getAllEventos($usuario);
+    public function getEventoByid($id);
+    public function createEvento(array $data);
+    public function updateEvento($id, array $data);
+    public function deleteEvento($id);
 }

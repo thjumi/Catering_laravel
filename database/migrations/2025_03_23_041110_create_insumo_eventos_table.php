@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('evento_id')->constrained('eventos');
             $table->foreignId('insumo_id')->constrained('insumos');
+            $table->integer('cantidad');
             $table->timestamps();
         });
     }
