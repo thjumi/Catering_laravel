@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('descripcion');
             $table->date('fechaTarea');
-            $table->foreignId('empleado_id')->constrained('empleados');
+            $table->foreignId('empleado_id')->constrained('empleados')->onDelete('cascade');
             $table->timestamps();
         });
     }

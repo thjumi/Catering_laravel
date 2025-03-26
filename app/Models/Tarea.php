@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tarea extends Model
 {
-    protected $table= 'tarea';
+    protected $table= 'tareas';
 
-    protected $filleable=['nombre','descripcion','fechaTarea','empleado_id'];
+    protected $fillable=['nombre','descripcion','fechaTarea','empleado_id'];
 
     public function empleado(){
         return $this->belongsTo('Empleado::class');

@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->date('fechaRegistro')->nullable(); // Cambiado a tipo fecha
-            $table->string('telefono');
-            $table->string('rol')->default('empleado'); // Rol por defecto: empleado
-            $table->string('subrol')->nullable();
+            $table->string('role')->default('empleado'); // Rol por defecto: empleado
+            $table->string('subrole')->nullable();
         });
     }
 
@@ -25,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['fechaRegistro', 'rol', 'telefono', 'subrole']); // Elimina también subrole
+            $table->dropColumn(['fechaRegistro', 'rol', 'subrole']); // Elimina también subrole
         });
     }
 };

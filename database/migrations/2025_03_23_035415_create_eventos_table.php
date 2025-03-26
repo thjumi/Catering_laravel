@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('descripcion');
             $table->date('fecha');
+            $table->string('horario')->nullable();
             $table->integer('num_invitados');
             $table->timestamps();
         });

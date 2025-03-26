@@ -19,7 +19,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // Para diferenciar entre admin, empleado, etc.
+        'role',
+        'subrole'
     ];
 
     /**
