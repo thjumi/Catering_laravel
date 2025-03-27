@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -102,9 +104,10 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/eventos/{id}', [EventoController::class, 'destroy'])->name('eventos.destroy');
     });
 });
-use App\Http\Controllers\DashboardController;
+
 
 Route::middleware(['auth'])->group(function () {
+
     // Dashboard para empleados
     Route::get('/dashboard/empleado', [DashboardController::class, 'empleado'])->name('dashboard.empleado');
 
@@ -114,4 +117,6 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard para administrador general
     Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
 });
+
+Route::get('/admin/eventos', [AdminController::class, 'eventos'])->name('admin.eventos.index');
 

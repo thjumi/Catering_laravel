@@ -9,10 +9,14 @@ use App\Models\Evento; // Modelo para los eventos
 
 class AdminController extends Controller
 {
+    public function eventos(){
+        $eventos = Evento::all(); // Obtener todos los eventos
+        return view('dashboard.eventos', compact('eventos'));
+    }
     // Método para el Dashboard del Administrador
     public function dashboard()
     {
-        $totalEmpleados = Empleado::count(); // Número total de empleados
+        $totalEmpleados= Empleado::count(); // Número total de empleados
         $totalEventos = Evento::count(); // Número total de eventos
         $totalTareas = Tarea::count(); // Número total de tareas
         $tareasPendientes = Tarea::where('estado', 'pendiente')->count(); // Total de tareas pendientes

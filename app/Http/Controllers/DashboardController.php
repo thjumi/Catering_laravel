@@ -27,12 +27,13 @@ class DashboardController extends Controller
     }
 
     public function admin()
-    {
-        $tareas = Tarea::count();
-        $insumos = Insumo::count();
-        $eventos = Evento::count();
-        $empleados = \App\Models\Empleado::count();
+{
+    $totalTareas = Tarea::count();
+    $totalEventos = Evento::count();
+    $totalEmpleados = \App\Models\Empleado::count();
+    $tareasPendientes = Tarea::where('estado', 'pendiente')->count();
 
-        return view('dashboard.admin', compact('tareas', 'insumos', 'eventos', 'empleados'));
-    }
+    return view('dashboard.admin', compact('totalTareas', 'totalEventos', 'totalEmpleados', 'tareasPendientes'));
+}
+
 }
