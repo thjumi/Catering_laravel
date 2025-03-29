@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nit');
             $table->string('nombre_empresa');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('administradors');
+        Schema::dropIfExists('administradores');
     }
 };

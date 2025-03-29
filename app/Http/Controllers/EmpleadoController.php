@@ -37,10 +37,12 @@ class EmpleadoController extends Controller
     {
         $user = $request->user();
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|email|unique:empleados,email',
-            'telefono' => 'nullable|string|max:15',
-            'rol' => 'required|string|in:administrador,empleado',
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|unique:users,email',
+            'telefono'=> 'nullable|string|max:15',
+            'rol'     => 'required|string|in:administrador,empleado',
+            'subrol' =>'nullable|string|in: Chef, Mesero, Decorador'
+
         ]);
 
         $empleado = $this->empleadoService->createEmpleado($data, $user);
@@ -69,10 +71,10 @@ class EmpleadoController extends Controller
     {
         $user = $request->user();
         $data = $request->validate([
-            'nombre' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:empleados,email,' . $id,
-            'telefono' => 'nullable|string|max:15',
-            'rol' => 'sometimes|required|string|in:administrador,empleado',
+            'name'    => 'sometimes|required|string|max:255',
+            'email'   => 'sometimes|required|email|unique:users,email,' . $id,
+            'telefono'=> 'nullable|string|max:15',
+            'rol'     => 'sometimes|required|string|in:administrador,empleado',
         ]);
 
         $empleado = $this->empleadoService->updateEmpleado($id, $data, $user);

@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('insumos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('descripcion');
+            $table->text('descripcion');
             $table->string('tipoInsumo');
             $table->string('lugarAlmacen');
             $table->integer('cantidad');
             $table->integer('stock');
-            $table->boolean('estado');
+            $table->boolean('disponibilidad')->default(true);
             $table->timestamps();
         });
     }

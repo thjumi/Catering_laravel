@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('descripcion');
             $table->date('fechaTarea');
             $table->string('estado')->default('pendiente');
-            $table->foreignId('empleado_id')->constrained('empleados')->onDelete('cascade');
+            $table->foreignId('empleado_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

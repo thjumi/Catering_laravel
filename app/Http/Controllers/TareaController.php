@@ -37,14 +37,15 @@ class TareaController extends Controller
     {
         $usuario = $request->user();
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre'      => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'fecha_tarea' => 'required|date',
+            'fechaTarea'  => 'required|date',
+            // Si es necesario, se podría pasar 'empleado_id' para asignar la tarea
         ]);
 
         $tarea = $this->tareaService->createTarea($data, $usuario);
 
-        return response()->json($tarea, 201); // 201 Created
+        return response()->json($tarea, 201);
     }
 
     // Actualizar una tarea existente
@@ -52,9 +53,9 @@ class TareaController extends Controller
     {
         $usuario = $request->user();
         $data = $request->validate([
-            'nombre' => 'sometimes|required|string|max:255',
+            'nombre'      => 'sometimes|required|string|max:255',
             'descripcion' => 'nullable|string',
-            'fecha_tarea' => 'sometimes|required|date',
+            'fechaTarea'  => 'sometimes|required|date',
         ]);
 
         $tarea = $this->tareaService->updateTarea($id, $data, $usuario);

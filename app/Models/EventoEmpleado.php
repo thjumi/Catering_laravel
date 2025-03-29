@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventoEmpleado extends Model
 {
-    protected $table= 'evento_empleado';
+    protected $table= 'evento_empleados';
 
-    protected $filleable=['evento_id','empleado_id', 'rol_empleado'];
+    protected $fillable=['evento_id','empleado_id', 'rol_empleado'];
 
     public function empleado(){
-        return $this->belongsTo('Empleado::class');
+        return $this->belongsTo(User::class, 'empleado_id');
     }
 
     public function evento(){

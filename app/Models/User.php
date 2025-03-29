@@ -15,23 +15,15 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'subrole'
-    ];
+    protected $fillable = [ 'name', 'email', 'password'];
+    protected $guarder =['rol', 'subrol'];
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password','remember_token', ];
 
     /**
      * The attributes that should be cast.
@@ -43,24 +35,14 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Relación con el modelo Administrador.
-     */
+
     public function administrador()
     {
         return $this->hasOne(Administrador::class);
     }
-
-    public function empleado()
+  
+    public function hasRole($rol)
     {
-        return $this->hasOne(Empleado::class);
-    }
-
-    /**
-     * Verifica si el usuario tiene el rol especificado.
-     */
-    public function hasRole($role)
-    {
-        return $this->role === $role;
+        return $this->rol === $rol;
     }
 }

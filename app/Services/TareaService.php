@@ -13,9 +13,8 @@ class TareaService implements TareaServiceInterface
         if ($usuario->rol === 'administrador') {
             return Tarea::all();
         } elseif ($usuario->rol === 'empleado') {
-            return Tarea::whereHas('eventoEmpleado', function ($query) use ($usuario) {
-                $query->where('empleado_id', $usuario->id);
-            })->get();
+            // Filtrar tareas asignadas al empleado
+            return Tarea::where('empleado_id', $usuario->id)->get();
         }
         return [];
     }
@@ -29,8 +28,8 @@ class TareaService implements TareaServiceInterface
             return $tarea;
         }
 
-        // Verificar si el usuario tiene acceso a esta tarea
-        if ($usuario->rol === 'empleado' && $tarea->eventoEmpleado->empleado_id === $usuario->id) {
+        // Para empleados, se verifica que la tarea esté asignada al usuario
+        if ($usuario->rol === 'empleado' && $tarea->empleado_id === $usuario->id) {
             return $tarea;
         }
 

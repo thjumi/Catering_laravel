@@ -37,13 +37,13 @@ class InsumoController extends Controller
     {
         $usuario = $request->user();
         $data = $request->validate([
-            'nombre' => 'required|string|max:250',
-            'descripcion' => 'nullable|string',
-            'cantidad' => 'nullable|integer',
-            'stock' => 'sometimes|required|boleean',
-            'estado' => 'sometimes|required|integer|min:0',
-            'tipoInsumo' => 'required|string|max:255',
-            'lugarAlmacen' => 'required|string|max:255',
+            'nombre'         => 'required|string|max:250',
+            'descripcion'    => 'nullable|string',
+            'cantidad'       => 'nullable|integer',
+            'stock'          => 'sometimes|required|integer|min:0',
+            'disponibilidad' => 'sometimes|required|boolean',
+            'tipoInsumo'     => 'required|string|max:255',
+            'lugarAlmacen'   => 'required|string|max:255',
         ]);
 
         $insumo = $this->insumoService->createInsumo($data, $usuario);
@@ -56,13 +56,13 @@ class InsumoController extends Controller
     {
         $usuario = $request->user();
         $data = $request->validate([
-            'nombre' => 'sometimes|required|string|max:250',
-            'descripcion' => 'nullable|string',
-            'cantidad' => 'nullable|integer',
-            'stock' => 'sometimes|required|boleean',
-            'estado' => 'sometimes|required|integer|min:0',
-            'tipoInsumo' => 'sometimes|required|string|max:255',
-            'lugarAlmacen' => 'sometimes|required|string|max:255',
+            'nombre'         => 'sometimes|required|string|max:250',
+            'descripcion'    => 'nullable|string',
+            'cantidad'       => 'nullable|integer',
+            'stock'          => 'sometimes|required|integer|min:0',
+            'disponibilidad' => 'sometimes|required|boolean',
+            'tipoInsumo'     => 'sometimes|required|string|max:255',
+            'lugarAlmacen'   => 'sometimes|required|string|max:255',
         ]);
 
         $insumo = $this->insumoService->updateInsumo($id, $data, $usuario);

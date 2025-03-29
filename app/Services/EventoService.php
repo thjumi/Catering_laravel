@@ -24,7 +24,7 @@ class EventoService implements EventoServiceInterface
     }
 
     // Obtener un evento por ID
-    public function getEventoByid($id)
+    public function getEventoById($id)
 
     {
         return Evento::findOrFail($id);
