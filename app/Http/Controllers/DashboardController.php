@@ -14,9 +14,16 @@ class DashboardController extends Controller
 
     public function empleado()
     {
-        $tareasAsignadas = Tarea::where('empleado_id', Auth::id())->get();
+        $tareasAsignadas = Tarea::with('evento')->where('empleado_id', Auth::id())->paginate(10);
         return view('dashboard.empleado', compact('tareasAsignadas'));
     }
+
+    public function obtenerTareasFecha($fecha)
+    {
+        $tareas = Tarea::with('evento')->whereDate('fechaTarea', $fecha)->paginate(10);
+        return response()->json($tareas, 200, [], JSON_PRETTY_PRINT);
+    }
+
 
     public function stock()
     {

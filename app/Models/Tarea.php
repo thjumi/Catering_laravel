@@ -11,10 +11,15 @@ class Tarea extends Model
     use HasFactory;
     protected $table = 'tareas';
 
-    protected $fillable = ['nombre', 'descripcion', 'fechaTarea', 'empleado_id', 'estado'];
+    protected $fillable = ['nombre', 'descripcion', 'fechaTarea', 'empleado_id', 'estado', 'evento_id'];
 
     public function empleado()
     {
         return $this->belongsTo(User::class, 'empleado_id');
+    }
+
+    public function evento()
+    {
+        return $this->belongsTo(Evento::class, 'evento_id');
     }
 }

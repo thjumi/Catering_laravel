@@ -23,5 +23,10 @@ class Evento extends Model
     {
         return $this->belongsToMany(User::class, 'evento_empleado', 'evento_id', 'empleado_id');
     }
+
+    public function tareas()
+    {
+        return $this->hasMany(Tarea::class);
+    }
 }
 
