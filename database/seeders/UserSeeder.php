@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
         ]);
         User::create([
             'name' => 'mesero',
-            'email' => 'chef@example.com',
+            'email' => 'meserof@example.com',
             'password' => bcrypt('empleado12345'),
             'role' => 'empleado',
             'subrole' =>'mesero',

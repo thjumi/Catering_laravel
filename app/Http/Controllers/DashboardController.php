@@ -11,18 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+
     public function empleado()
     {
-        $tareasAsignadas = Tarea::with('evento')->where('empleado_id', Auth::id())->paginate(10);
+        $tareasAsignadas = Tarea::where('empleado_id', Auth::id())->get();
         return view('dashboard.empleado', compact('tareasAsignadas'));
     }
-
-    public function obtenerTareasFecha($fecha)
-    {
-        $tareas = Tarea::with('evento')->whereDate('fechaTarea', $fecha)->paginate(10);
-        return response()->json($tareas, 200, [], JSON_PRETTY_PRINT);
-    }
-
 
     public function stock()
     {
@@ -34,13 +28,13 @@ class DashboardController extends Controller
 
     public function admin()
     {
+        $eventos = Evento::all(); // Obtener eventos de la BD
         $totalTareas = Tarea::count();
         $totalEventos = Evento::count();
-
-        // Ahora se cuentan los usuarios con rol 'empleado'
         $totalEmpleados = User::where('role', 'empleado')->count();
         $tareasPendientes = Tarea::where('estado', 'pendiente')->count();
 
-        return view('dashboard.admin', compact('totalTareas', 'totalEventos', 'totalEmpleados', 'tareasPendientes'));
+        return view('dashboard.admin', compact('eventos', 'totalTareas', 'totalEventos', 'totalEmpleados', 'tareasPendientes'));
     }
 }
+

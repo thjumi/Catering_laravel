@@ -13,5 +13,4 @@ interface TareaServiceInterface
     public function updateTarea($id, array $data, $user);
 
     public function deleteTarea($id, $user);
-
 }

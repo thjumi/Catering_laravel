@@ -20,11 +20,17 @@
 
                     <div class="mt-6 grid grid-cols-3 gap-6">
                         <a href="{{ route('empleados.index') }}"
-                            class="block p-6 bg-blue-500 text-white rounded-lg text-center">Gestionar Empleados</a>
+                           class="block p-6 bg-blue-500 text-white rounded-lg text-center">
+                            Gestionar Empleados
+                        </a>
                         <a href="{{ route('eventos.index') }}"
-                            class="block p-6 bg-green-500 text-white rounded-lg text-center">Gestionar Eventos</a>
+                           class="block p-6 bg-green-500 text-white rounded-lg text-center">
+                            Gestionar Eventos
+                        </a>
                         <a href="{{ route('tareas.index') }}"
-                            class="block p-6 bg-yellow-500 text-white rounded-lg text-center">Gestionar Tareas</a>
+                           class="block p-6 bg-yellow-500 text-white rounded-lg text-center">
+                            Gestionar Tareas
+                        </a>
                     </div>
                 </div>
             </div>

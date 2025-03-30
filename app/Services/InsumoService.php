@@ -11,7 +11,7 @@ class InsumoService implements InsumoServiceInterface
     // Obtener todos los insumos según el rol del usuario
     public function getAllInsumos($usuario)
     {
-        if ($usuario->rol === 'administrador' || $usuario->rol === 'administrador stock') {
+        if ($usuario->role === 'administrador' || $usuario->role === 'administrador stock') {
             return Insumo::all();
         }
 
@@ -23,7 +23,7 @@ class InsumoService implements InsumoServiceInterface
     {
         $insumo = Insumo::findOrFail($id);
 
-        if ($usuario->rol === 'administrador' || $usuario->rol === 'administrador stock') {
+        if ($usuario->role === 'administrador' || $usuario->role === 'administrador stock') {
             return $insumo;
         }
 
@@ -33,7 +33,7 @@ class InsumoService implements InsumoServiceInterface
     // Crear un nuevo insumo (solo para el administrador de stock)
     public function createInsumo(array $data, $usuario)
     {
-        if ($usuario->rol !== 'administrador stock') {
+        if ($usuario->role !== 'administrador stock') {
             abort(403, 'No tienes permiso para crear insumos.');
         }
 
@@ -45,7 +45,7 @@ class InsumoService implements InsumoServiceInterface
     {
         $insumo = Insumo::findOrFail($id);
 
-        if ($usuario->rol !== 'administrador stock') {
+        if ($usuario->role !== 'administrador stock') {
             abort(403, 'No tienes permiso para actualizar insumos.');
         }
 
@@ -58,7 +58,7 @@ class InsumoService implements InsumoServiceInterface
     {
         $insumo = Insumo::findOrFail($id);
 
-        if ($usuario->rol !== 'administrador stock') {
+        if ($usuario->role !== 'administrador stock') {
             abort(403, 'No tienes permiso para eliminar insumos.');
         }
 
@@ -68,7 +68,7 @@ class InsumoService implements InsumoServiceInterface
     // Asignar un insumo a un evento (solo para el administrador de stock)
     public function asignarInsumoAEvento($insumoId, $eventoId, $cantidad, $usuario)
     {
-        if ($usuario->rol !== 'administrador stock') {
+        if ($usuario->role !== 'administrador stock') {
             abort(403, 'No tienes permiso para asignar insumos a eventos.');
         }
 
@@ -76,9 +76,11 @@ class InsumoService implements InsumoServiceInterface
         $insumo = Insumo::findOrFail($insumoId);
         $evento = Evento::findOrFail($eventoId);
 
-        // Insertar en la tabla pivot evento_insumo
+        // Inserta en la tabla pivote la asignación.
+        // Nota: Asegúrate de que en el modelo Evento esté definida la relación "insumos".
         $evento->insumos()->attach($insumoId, ['cantidad' => $cantidad]);
 
         return response()->json(['message' => 'Insumo asignado al evento con éxito']);
     }
 }
+

@@ -9,7 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <a href="{{ route('admin.eventos.create') }}" class="btn btn-primary">Añadir Evento</a>
+                    <a href="{{ route('eventos.create') }}" class="btn btn-primary">Añadir Evento</a>
+                    
                     <table class="w-full mt-6 border-collapse border border-gray-300">
                         <thead>
                             <tr>
@@ -20,21 +21,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($eventos as $evento)
-                            <tr>
-                                <td class="border border-gray-300 p-2">{{ $evento->nombre }}</td>
-                                <td class="border border-gray-300 p-2">{{ $evento->fecha }}</td>
-                                <td class="border border-gray-300 p-2">{{ $evento->descripción }}</td>
-                                <td class="border border-gray-300 p-2">
-                                    <a href="{{ route('admin.eventos.edit', $evento->id) }}" class="btn btn-warning">Editar</a>
-                                    <form action="{{ route('admin.eventos.destroy', $evento->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
+                            @if($eventos->isEmpty())
+                                <tr>
+                                    <td colspan="4" class="border border-gray-300 p-2 text-center">
+                                        No hay eventos registrados.
+                                        <br>
+                                        <a href="{{ route('eventos.create') }}" class="btn btn-primary mt-2">Crear Nuevo Evento</a>
+                                    </td>
+                                </tr>
+                            @else
+                                @foreach($eventos as $evento)
+                                    <tr>
+                                        <td class="border border-gray-300 p-2">{{ $evento->nombre }}</td>
+                                        <td class="border border-gray-300 p-2">{{ $evento->fecha }}</td>
+                                        <td class="border border-gray-300 p-2">{{ $evento->descripcion }}</td>
+                                        <td class="border border-gray-300 p-2">
+                                            <a href="{{ route('eventos.edit', $evento->id) }}" class="btn btn-warning">Editar</a>
+                                            <form action="{{ route('eventos.destroy', $evento->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

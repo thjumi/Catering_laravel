@@ -3,28 +3,34 @@
 namespace App\Services;
 
 use App\Contracts\EmpleadoServiceInterface;
-use App\Models\Empleado;
-
+use App\Models\User; // Ahora usamos el modelo User
 
 class EmpleadoService implements EmpleadoServiceInterface
 {
     // Obtener todos los empleados (solo para administradores)
-    public function getAllEmpleados($user)
-    {
-        if ($user->rol !== 'administrador') {
-            abort(403, 'No tienes permiso para ver empleados.');
-        }
 
-        return Empleado::all();
-    }
+        public function getAllEmpleados($user)
+        {
+            if (strtolower($user->role) !== 'administrador') {
+                abort(403, 'No tienes permiso para ver empleados.');
+            }
+        
+            return User::where('role', 'Empleado')->get(); // O normaliza también esta comparación si es necesario
+        }
+        
+    
 
     // Obtener un empleado por ID con verificación de permisos
     public function getEmpleadoById($id, $user)
     {
-        $empleado = Empleado::findOrFail($id);
+        $empleado = User::findOrFail($id);
 
-        if ($user->rol !== 'administrador') {
+        if ($user->role !== 'administrador') {
             abort(403, 'No tienes permiso para ver este empleado.');
+        }
+
+        if ($empleado->role !== 'empleado') {
+            abort(404, 'Empleado no encontrado.');
         }
 
         return $empleado;
@@ -33,41 +39,40 @@ class EmpleadoService implements EmpleadoServiceInterface
     // Crear un nuevo empleado (solo para administradores)
     public function createEmpleado(array $data, $user)
     {
-        if ($user->rol !== 'administrador') {
+        if ($user->role !== 'administrador') {
             abort(403, 'No tienes permiso para crear un empleado.');
         }
 
-        return Empleado::create($data);
+        // Asegúrate de que el campo 'role' se guarde correctamente en la tabla users
+        return User::create($data);
     }
 
-    // Asignar un rol a un empleado (solo para administradores)
-  // Asignar un subrol a un empleado (solo para administradores)
-public function asignarSubrolEmpleado($id, array $data, $user)
-{
-    if ($user->rol !== 'administrador') {
-        abort(403, 'No tienes permiso para asignar subroles.');
+    // Asignar un subrol a un empleado (solo para administradores)
+    public function asignarSubrolEmpleado($id, array $data, $user)
+    {
+        if ($user->role !== 'administrador') {
+            abort(403, 'No tienes permiso para asignar subroles.');
+        }
+
+        $empleado = User::findOrFail($id);
+
+        // Verificar que el rol sea "empleado" antes de asignar un subrol
+        if ($empleado->role !== 'empleado') {
+            abort(400, 'Solo los empleados pueden tener subrol.');
+        }
+
+        $empleado->subrol = $data['subrol'];
+        $empleado->save();
+
+        return $empleado;
     }
-
-    $empleado = Empleado::findOrFail($id);
-
-    // Verificar que el rol sea "empleado" antes de asignar un subrol
-    if ($empleado->rol !== 'empleado') {
-        abort(400, 'Solo los empleados pueden tener subrol.');
-    }
-
-    $empleado->subrol = $data['subrol'];
-    $empleado->save();
-
-    return $empleado;
-}
-
 
     // Actualizar un empleado existente (solo para administradores)
     public function updateEmpleado($id, array $data, $user)
     {
-        $empleado = Empleado::findOrFail($id);
+        $empleado = User::findOrFail($id);
 
-        if ($user->rol !== 'administrador') {
+        if ($user->role !== 'administrador') {
             abort(403, 'No tienes permiso para actualizar empleados.');
         }
 
@@ -78,12 +83,13 @@ public function asignarSubrolEmpleado($id, array $data, $user)
     // Eliminar un empleado con verificación de permisos
     public function deleteEmpleado($id, $user)
     {
-        $empleado = Empleado::findOrFail($id);
+        $empleado = User::findOrFail($id);
 
-        if ($user->rol !== 'administrador') {
+        if ($user->role !== 'administrador') {
             abort(403, 'No tienes permiso para eliminar empleados.');
         }
 
         $empleado->delete();
     }
 }
+

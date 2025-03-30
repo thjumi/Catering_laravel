@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-
 use App\Contracts\EventoServiceInterface;
 use App\Models\Evento;
 
@@ -11,21 +10,21 @@ class EventoService implements EventoServiceInterface
     // Obtener eventos según el rol del usuario
     public function getAllEventos($user)
     {
-        if ($user->rol === 'administrador') {
+        if ($user->role === 'administrador') {
             return Evento::all(); // Los administradores ven todos los eventos
-        } elseif ($user->rol === 'empleado') {
-            return Evento::whereHas('eventoEmpleado', function ($query) use ($user) {
-                $query->where('empleado_id', $user->id);
-            })->get(); // Los empleados solo ven sus eventos asignados
-        } elseif ($user->rol === 'administrador_stock') {
+        } elseif ($user->role === 'empleado') {
+            // Se usa la relación 'empleados' definida en el modelo Evento
+            return Evento::whereHas('empleados', function ($query) use ($user) {
+                $query->where('users.id', $user->id);
+            })->get(); // Los empleados ven solo los eventos a los que están asignados
+        } elseif ($user->role === 'administrador_stock') {
             return Evento::all(); // El administrador de stock ve todos los eventos para verificar existencia
         }
         return [];
     }
 
     // Obtener un evento por ID
-    public function getEventoByid($id)
-
+    public function getEventoById($id)
     {
         return Evento::findOrFail($id);
     }
@@ -51,3 +50,4 @@ class EventoService implements EventoServiceInterface
         $evento->delete();
     }
 }
+

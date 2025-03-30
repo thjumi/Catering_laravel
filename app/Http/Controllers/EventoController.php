@@ -17,16 +17,15 @@ class EventoController extends Controller
     // Obtener todos los eventos según el rol del usuario
     public function index(Request $request)
     {
-        $usuario = $request->user();
-        $eventos = $this->eventoService->getAllEventos($usuario);
-
-        return response()->json($eventos);
+        $user = $request->user();
+        $eventos = $this->eventoService->getAllEventos($user);
+        return view('eventos.index', compact('eventos'));
     }
 
     // Obtener un evento específico por ID
     public function show($id)
     {
-        $evento = $this->eventoService->getEventoByid($id);
+        $evento = $this->eventoService->getEventoById($id);
 
         return response()->json($evento);
     }
@@ -35,32 +34,35 @@ class EventoController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'nombre'         => 'required|string|min:10|max:40',
+            'descripcion'    => 'nullable|string|min:30|max:250',
+            'fecha'          => 'required|date',
+            'horario'        => 'required|date_format:H:i',
+            'num_invitados'  => 'required|numeric|min:1',
+            // Si se requiere asignar un administrador, puedes agregar 'administrador_id'
         ]);
 
         $evento = $this->eventoService->createEvento($data);
 
-        return response()->json($evento, 201); // 201 Created
+        return response()->json($evento, 201);
     }
 
     // Actualizar un evento existente
     public function update($id, Request $request)
     {
         $data = $request->validate([
-            'nombre' => 'sometimes|required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'fecha_inicio' => 'sometimes|required|date',
-            'fecha_fin' => 'sometimes|required|date|after_or_equal:fecha_inicio',
+            'nombre'         => 'required|string|min:10|max:40',
+            'descripcion'    => 'nullable|string|min:30|max:250',
+            'fecha'          => 'required|date',
+            'horario'        => 'required|date_format:H:i',
+            'num_invitados'  => 'required|numeric|min:1',
         ]);
 
         $evento = $this->eventoService->updateEvento($id, $data);
 
         return response()->json([
             'message' => 'Evento actualizado con éxito',
-            'data' => $evento,
+            'data'    => $evento,
         ]);
     }
 

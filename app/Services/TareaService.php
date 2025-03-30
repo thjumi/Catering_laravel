@@ -10,12 +10,11 @@ class TareaService implements TareaServiceInterface
     // Obtener las tareas según el rol del usuario
     public function getAllTareas($usuario)
     {
-        if ($usuario->rol === 'administrador') {
+        if ($usuario->role === 'administrador') {
             return Tarea::all();
-        } elseif ($usuario->rol === 'empleado') {
-            return Tarea::whereHas('eventoEmpleado', function ($query) use ($usuario) {
-                $query->where('empleado_id', $usuario->id);
-            })->get();
+        } elseif ($usuario->role === 'empleado') {
+            // Filtrar tareas asignadas al empleado
+            return Tarea::where('empleado_id', $usuario->id)->get();
         }
         return [];
     }
@@ -25,12 +24,12 @@ class TareaService implements TareaServiceInterface
     {
         $tarea = Tarea::findOrFail($id);
 
-        if ($usuario->rol === 'administrador') {
+        if ($usuario->role === 'administrador') {
             return $tarea;
         }
 
-        // Verificar si el usuario tiene acceso a esta tarea
-        if ($usuario->rol === 'empleado' && $tarea->eventoEmpleado->empleado_id === $usuario->id) {
+        // Para empleados, se verifica que la tarea esté asignada al usuario
+        if ($usuario->role === 'empleado' && $tarea->empleado_id === $usuario->id) {
             return $tarea;
         }
 
@@ -40,7 +39,7 @@ class TareaService implements TareaServiceInterface
     // Crear una nueva tarea (solo para administradores)
     public function createTarea(array $data, $usuario)
     {
-        if ($usuario->rol !== 'administrador') {
+        if ($usuario->role !== 'administrador') {
             abort(403, 'No tienes permiso para crear tareas.');
         }
 
@@ -52,7 +51,7 @@ class TareaService implements TareaServiceInterface
     {
         $tarea = Tarea::findOrFail($id);
 
-        if ($usuario->rol !== 'administrador') {
+        if ($usuario->role !== 'administrador') {
             abort(403, 'No tienes permiso para actualizar tareas.');
         }
 
@@ -65,7 +64,7 @@ class TareaService implements TareaServiceInterface
     {
         $tarea = Tarea::findOrFail($id);
 
-        if ($usuario->rol !== 'administrador') {
+        if ($usuario->role !== 'administrador') {
             abort(403, 'No tienes permiso para eliminar tareas.');
         }
 

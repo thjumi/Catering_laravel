@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->date('fechaRegistro')->nullable(); // Cambiado a tipo fecha
-            $table->string('role')->default('empleado'); // Rol por defecto: empleado
-            $table->string('subrole')->nullable();
+            $table->enum('role',['administrador', 'administrador Stock', 'empleado'])->default('empleado');
+            $table->enum('subrole', ['mesero', 'chef', 'decorador'])->default('mesero');
         });
     }
 
@@ -24,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['fechaRegistro', 'rol', 'subrole']); // Elimina también subrole
+            $table->dropColumn(['role', 'subrole']);
         });
     }
 };
