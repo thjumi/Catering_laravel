@@ -5,18 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Evento;
 use App\Models\Insumo;
 use App\Models\Tarea;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function empleado()
     {
-        $tareasAsignadas = Tarea::whereHas('eventoEmpleado', function ($query) {
-            $query->where('empleado_id', auth('user')->user()->id);
-        })->get();
-
+        $tareasAsignadas = Tarea::with('evento')->where('empleado_id', Auth::id())->paginate(10);
         return view('dashboard.empleado', compact('tareasAsignadas'));
     }
+
+    public function obtenerTareasFecha($fecha)
+    {
+        $tareas = Tarea::with('evento')->whereDate('fechaTarea', $fecha)->paginate(10);
+        return response()->json($tareas, 200, [], JSON_PRETTY_PRINT);
+    }
+
 
     public function stock()
     {
@@ -28,11 +34,13 @@ class DashboardController extends Controller
 
     public function admin()
     {
-        $tareas = Tarea::count();
-        $insumos = Insumo::count();
-        $eventos = Evento::count();
-        $empleados = \App\Models\Empleado::count();
+        $totalTareas = Tarea::count();
+        $totalEventos = Evento::count();
 
-        return view('dashboard.admin', compact('tareas', 'insumos', 'eventos', 'empleados'));
+        // Ahora se cuentan los usuarios con rol 'empleado'
+        $totalEmpleados = User::where('role', 'empleado')->count();
+        $tareasPendientes = Tarea::where('estado', 'pendiente')->count();
+
+        return view('dashboard.admin', compact('totalTareas', 'totalEventos', 'totalEmpleados', 'tareasPendientes'));
     }
 }
