@@ -56,11 +56,11 @@ Route::middleware('auth')->group(function () {
     Route::prefix('tareas')->group(function () {
         Route::get('/', [TareaController::class, 'index'])->name('tareas.index');
         Route::get('/{id}', [TareaController::class, 'show'])->name('tareas.show');
+        
 
         // Solo administradores pueden crear, editar y eliminar tareas
         Route::middleware([Role::class . ':administrador'])->group(function () {
-            Route::get('/create', [TareaController::class, 'create'])->name('tareas.create');
-            Route::post('/', [TareaController::class, 'store'])->name('tareas.store');
+            Route::get('/create', [TareaController::class, 'create'])->name('tareas.create');            Route::post('/', [TareaController::class, 'store'])->name('tareas.store');
             Route::get('/{id}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
             Route::put('/{id}', [TareaController::class, 'update'])->name('tareas.update');
             Route::delete('/{id}', [TareaController::class, 'destroy'])->name('tareas.destroy');
@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
 
     // Rutas de empleados (solo administradores)
     Route::prefix('empleados')->group(function () {
+
         // Solo administradores pueden crear, editar y eliminar tareas
         Route::middleware([Role::class . ':administrador'])->group(function () {
 

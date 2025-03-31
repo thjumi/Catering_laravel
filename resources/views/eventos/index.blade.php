@@ -7,40 +7,51 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <a href="{{ route('eventos.create') }}" class="btn btn-primary">Añadir Evento</a>
-                    
-                    <table class="w-full mt-6 border-collapse border border-gray-300">
-                        <thead>
-                            <tr>
-                                <th class="border border-gray-300 p-2">Nombre</th>
-                                <th class="border border-gray-300 p-2">Fecha</th>
-                                <th class="border border-gray-300 p-2">Descripción</th>
-                                <th class="border border-gray-300 p-2">Acciones</th>
+            <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="p-6">
+                    <a href="{{ route('eventos.create') }}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Añadir Evento</a>
+
+                    <table class="w-full mt-6 border border-gray-300">
+                        <thead class="bg-gray-100 dark:bg-gray-700">
+                            <tr class="text-left text-gray-700 dark:text-gray-300">
+                                <th class="px-4 py-2 border-b border-gray-300">Nombre</th>
+                                <th class="px-4 py-2 border-b border-gray-300">Fecha</th>
+                                <th class="px-4 py-2 border-b border-gray-300">Horario</th>
+                                <th class="px-4 py-2 border-b border-gray-300">Empleado Asignado</th>
+                                <th class="px-4 py-2 border-b border-gray-300">Descripción</th>
+                                <th class="px-4 py-2 border-b border-gray-300">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if($eventos->isEmpty())
                                 <tr>
-                                    <td colspan="4" class="border border-gray-300 p-2 text-center">
+                                    <td colspan="6" class="px-4 py-2 text-center text-gray-500 dark:text-gray-400">
                                         No hay eventos registrados.
-                                        <br>
-                                        <a href="{{ route('eventos.create') }}" class="btn btn-primary mt-2">Crear Nuevo Evento</a>
                                     </td>
                                 </tr>
                             @else
                                 @foreach($eventos as $evento)
-                                    <tr>
-                                        <td class="border border-gray-300 p-2">{{ $evento->nombre }}</td>
-                                        <td class="border border-gray-300 p-2">{{ $evento->fecha }}</td>
-                                        <td class="border border-gray-300 p-2">{{ $evento->descripcion }}</td>
-                                        <td class="border border-gray-300 p-2">
-                                            <a href="{{ route('eventos.edit', $evento->id) }}" class="btn btn-warning">Editar</a>
-                                            <form action="{{ route('eventos.destroy', $evento->id) }}" method="POST" style="display:inline;">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="px-4 py-2 border-b text-white border-gray-300">{{ $evento->nombre }}</td>
+                                        <td class="px-4 py-2 border-b text-white border-gray-300">{{ $evento->fecha }}</td>
+                                        <td class="px-4 py-2 border-b text-white border-gray-300">{{ $evento->horario }}</td>
+                                        <td class="px-4 py-2 border-b text-white border-gray-300">
+                                            {{ $evento->empleado?->name ?? 'No asignado' }}
+                                        </td>
+                                        <td class="px-4 py-2 border-b text-white border-gray-300">{{ $evento->descripcion }}</td>
+                                        <td class="px-4 py-2 border-b text-white border-gray-300">
+                                            <!-- Botón Ver Detalles -->
+                                            <a href="{{ route('eventos.show', $evento->id) }}" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm">Ver Detalles</a>
+                                            
+                                            <!-- Botón Editar -->
+                                            <a href="{{ route('eventos.edit', $evento->id) }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">Editar</a>
+
+                                            <!-- Botón Eliminar -->
+                                            <form action="{{ route('eventos.destroy', $evento->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                                                onclick="return confirm('¿Estás seguro de que quieres eliminar este evento?')">Eliminar</button>
                                             </form>
                                         </td>
                                     </tr>

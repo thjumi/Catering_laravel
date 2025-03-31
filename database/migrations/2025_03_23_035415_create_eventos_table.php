@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('horario');
             $table->integer('num_invitados');
             $table->foreignId('administrador_id')->constrained('administradores');
+            $table->foreignId('empleado_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

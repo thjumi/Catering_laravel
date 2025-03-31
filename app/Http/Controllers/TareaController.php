@@ -20,8 +20,10 @@ class TareaController extends Controller
         $usuario = $request->user();
         $tareas = $this->tareaService->getAllTareas($usuario);
 
-        return response()->json($tareas);
+        // Devuelve la vista 'tareas.index' con las tareas
+        return view('tareas.index', compact('tareas'));
     }
+
 
     // Obtener una tarea específica por ID
     public function show($id, Request $request)
@@ -32,23 +34,28 @@ class TareaController extends Controller
         return response()->json($tarea);
     }
 
+    public function create()
+    {
+        return view('tareas.create');
+    }
+
     // Crear una nueva tarea
     public function store(Request $request)
     {
         $usuario = $request->user();
-        
+
         $data = $request->validate([
-            'nombre'      => 'required|string|max:255',
+            'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'fechaTarea'  => 'required|date',
+            'fechaTarea' => 'required|date',
             'empleado_id' => 'nullable|exists:users,id'
         ]);
-    
+
         $this->tareaService->createTarea($data, $usuario);
-    
+
         return redirect()->route('tareas.index')->with('success', 'Tarea creada con éxito');
     }
-    
+
 
 
     // Actualizar una tarea existente
@@ -56,9 +63,9 @@ class TareaController extends Controller
     {
         $usuario = $request->user();
         $data = $request->validate([
-            'nombre'      => 'sometimes|required|string|max:255',
+            'nombre' => 'sometimes|required|string|max:255',
             'descripcion' => 'nullable|string',
-            'fechaTarea'  => 'sometimes|required|date',
+            'fechaTarea' => 'sometimes|required|date',
         ]);
 
         $tarea = $this->tareaService->updateTarea($id, $data, $usuario);

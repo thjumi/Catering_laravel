@@ -8,25 +8,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Evento extends Model
 {
     use HasFactory;
+
     protected $table = 'eventos';
 
-    protected $fillable = ['nombre', 'descripcion', 'fecha', 'horario', 'num_invitados', 'administrador_id'];
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'fecha',
+        'horario',
+        'num_invitados',
+        'administrador_id',
+        'empleado_id'
+    ];
 
+    // Relación con Administrador
     public function administrador()
     {
-        return $this->belongsTo(Administrador::class);
+        return $this->belongsTo(User::class, 'administrador_id');
     }
 
-    // Relación de muchos a muchos para asignar empleados al evento.
-    // Asegúrate de tener la tabla pivote "evento_empleado" con las columnas "evento_id" y "empleado_id".
-    public function empleados()
+    // Relación con un único empleado asignado
+    public function empleado()
     {
-        return $this->belongsToMany(User::class, 'evento_empleado', 'evento_id', 'empleado_id');
-    }
-
-    public function tareas()
-    {
-        return $this->hasMany(Tarea::class);
+        return $this->belongsTo(User::class, 'empleado_id'); // Relación con la tabla users
     }
 }
-
