@@ -35,7 +35,7 @@ class EventoController extends Controller
             'fecha' => 'required|date',
             'horario' => 'required|date_format:H:i',
             'num_invitados' => 'required|numeric|min:1',
-            'usuario_id' => 'required|exists:users,id', // Validar usuario
+            'usuario_id' => 'required|exists:users,id',
         ]);
 
         $data['administrador_id'] = 1; // Asignar administrador por defecto

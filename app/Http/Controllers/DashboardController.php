@@ -11,37 +11,39 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-
+    // Función para mostrar las tareas asignadas a un empleado
     public function empleado()
     {
         $tareasAsignadas = Tarea::with('evento')->where('empleado_id', Auth::id())->paginate(10);
         return view('dashboard.empleado', compact('tareasAsignadas'));
     }
 
+    // Obtener tareas según la fecha
     public function obtenerTareasFecha($fecha)
     {
         $tareas = Tarea::with('evento')->whereDate('fechaTarea', $fecha)->paginate(10);
         return response()->json($tareas, 200, [], JSON_PRETTY_PRINT);
     }
 
-
+    // Función para mostrar el stock de insumos
     public function stock()
     {
-        $insumos = Insumo::all();
-        $eventos = Evento::all();
+        $insumos = Insumo::all();  // Obtener todos los insumos
+        $eventos = Evento::all();  // Obtener todos los eventos
 
         return view('dashboard.stock', compact('insumos', 'eventos'));
     }
 
+    // Función para el dashboard de administrador
     public function admin()
     {
-        $eventos = Evento::all(); // Obtener eventos de la BD
+        $eventos = Evento::all();
         $totalTareas = Tarea::count();
         $totalEventos = Evento::count();
-        $totalEmpleados = User::where('role', 'empleado')->count();
-        $tareasPendientes = Tarea::where('estado', 'pendiente')->count();
+        $totalEmpleados = User::where('role', 'empleado')->count(); // Total de empleados
+        $tareasPendientes = Tarea::where('estado', 'pendiente')->count(); // Tareas pendientes
+        $totalInsumos = Insumo::count();
 
-        return view('dashboard.admin', compact('eventos', 'totalTareas', 'totalEventos', 'totalEmpleados', 'tareasPendientes'));
+        return view('dashboard.admin', compact('eventos', 'totalTareas', 'totalEventos', 'totalEmpleados', 'tareasPendientes', 'totalInsumos'));
     }
 }
-

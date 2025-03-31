@@ -16,6 +16,7 @@
                         <li>Total de eventos: {{ $totalEventos }}</li>
                         <li>Total de tareas: {{ $totalTareas }}</li>
                         <li>Tareas pendientes: {{ $tareasPendientes }}</li>
+                        <li>Total de insumos: {{ $totalInsumos }}</li>
                     </ul>
 
                     <div class="mt-6 grid grid-cols-3 gap-6">
@@ -30,6 +31,10 @@
                         <a href="{{ route('tareas.index') }}"
                            class="block p-6 bg-yellow-500 text-white rounded-lg text-center">
                             Gestionar Tareas
+                        </a>
+                        <a href="{{ route('insumos.index') }}"
+                           class="block p-6 bg-red-500 text-white rounded-lg text-center">
+                            Ver Insumos
                         </a>
                     </div>
                 </div>
