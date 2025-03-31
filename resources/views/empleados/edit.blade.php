@@ -16,13 +16,27 @@
                         @method('PUT')
                         <label for="nombre">Nombre:</label>
                         <input type="text" class="form-control" name="nombre" id="nombre" value="{{ $empleado->name }}" required>
+                        @error('nombre')
+                             <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                        <label for="email">Email:</label>
+                        <input type="text" class="form-control" name="email" id="email" value="{{ $empleado->email }}" required>
+                        @error('email')
+                             <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <label for="rol">Rol:</label>
                         <select class="form-select" name="rol" id="rol" required>
                             <option value="empleado" {{ $empleado->rol === 'empleado' ? 'selected' : '' }}>Empleado</option>
                             <option value="administrador" {{ $empleado->rol === 'administrador' ? 'selected' : '' }}>Administrador</option>
                         </select>
+                        @error('rol')
+                             <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <label for="subrol">Subrol:</label>
                         <input type="text" class="form-control" name="subrol" id="subrol" value="{{ $empleado->subrole }}" {{ $empleado->role !== 'empleado' ? 'disabled' : '' }}>
+                        @error('subrol')
+                             <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <br>
                         <button class="btn btn-success" type="submit">Actualizar</button>
                     </form>

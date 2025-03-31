@@ -4,12 +4,14 @@
             {{ __('Gestión de Empleados') }}
         </h2>
     </x-slot>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8  bg-green-300">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                     <h1 class="text-center">Empleados</h1>
                     <a href="{{ route('empleados.create') }}" class="btn btn-success">Añadir Empleado</a>
                     <table class="table table-bordered">
@@ -31,7 +33,7 @@
                                 <td>{{ $empleado->subrole }}</td>
                                 <td>
                                     <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                                    <form action="{{ route('empleados.destroy', $empleado->id) }}" method="POST " class="d-inline">
+                                    <form action="{{ route('empleados.destroy', $empleado->id) }}" method="POST" class="d-inline">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Desea Eliminar?')">Eliminar</button>
                                     </form>
@@ -45,4 +47,11 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 </x-app-layout>

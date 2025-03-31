@@ -15,15 +15,27 @@
                         @csrf
                         <label for="nombre">Nombre:</label>
                         <input type="text" class="form-control" name="nombre" id="nombre" required>
+                        @error('nombre')
+                             <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <label for="email">Email:</label>
                         <input type="text" class="form-control" name="email" id="email" required>
+                        @error('email')
+                             <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <label for="rol">Rol:</label>
                         <select class="form-select" name="rol" id="rol" required>
                             <option value="empleado">Empleado</option>
                             <option value="administrador">Administrador</option>
                         </select>
+                        @error('rol')
+                             <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <label for="subrol">Subrol:</label>
                         <input type="text" class="form-control" name="subrol" id="subrol" required>
+                        @error('subrol')
+                             <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <br/>
                         <button class="btn btn-success" type="submit">Crear</button>
                     </form>

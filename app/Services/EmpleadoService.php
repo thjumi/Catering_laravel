@@ -91,6 +91,7 @@ class EmpleadoService implements EmpleadoServiceInterface
 
         $empleado->update([
             'name' => $data['nombre'],
+            'email' => $data['email'],
             'role' => $data['rol'],
             'subrole' => $data['subrol'],
         ]);

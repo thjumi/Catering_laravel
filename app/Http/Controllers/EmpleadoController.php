@@ -53,7 +53,7 @@ class EmpleadoController extends Controller
 
         $empleado = $this->empleadoService->createEmpleado($data, $user);
 
-        return redirect('/empleados');
+        return redirect('/empleados')->with('success', 'Empleado creado correctamente.');
     }
 
     public function edit($id, Request $request){
@@ -93,7 +93,7 @@ class EmpleadoController extends Controller
 
         $empleado = $this->empleadoService->updateEmpleado($id, $data, $user);
 
-        return redirect('/empleados');
+        return redirect('/empleados')->with('success', 'Empleado actualizado correctamente.');
     }
 
     // Eliminar un empleado
@@ -103,6 +103,6 @@ class EmpleadoController extends Controller
 
         $this->empleadoService->deleteEmpleado($id, $user);
 
-        return redirect('/empleados');
+        return redirect('/empleados')->with('success', 'Empleado eliminado correctamente.');
     }
 }

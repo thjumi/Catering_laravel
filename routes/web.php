@@ -76,7 +76,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [EmpleadoController::class, 'store'])->name('empleados.store');
         Route::get('/{id}/edit', [EmpleadoController::class, 'edit'])->name('empleados.edit');
         Route::put('/{id}', [EmpleadoController::class, 'update'])->name('empleados.update');
-        Route::delete('/{id}/destroy', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
+        Route::delete('/{id}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
      });
 
 
