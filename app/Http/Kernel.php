@@ -11,6 +11,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
+        \App\Http\Middleware\Role::class,
     ];
 
     /**
@@ -36,5 +37,10 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\Role::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // Puedes agregar otros middleware de permisos (ej. 'can:admin-access') según lo hayas definido en tus policies o gates.
+    ];
+
+    protected $middlewareAliases = [
+        // Middlewares predeterminados de Laravel
+        'role' => \App\Http\Middleware\Role::class,
     ];
 }

@@ -4,8 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
-class CheckRole
+class Role
 {
     /**
      * Maneja una solicitud entrante.
@@ -15,13 +18,10 @@ class CheckRole
      * @param  mixed  ...$roles  Roles permitidos
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, string $role): Response
     {
-        $user = $request->user();
-
-        // Si no hay usuario autenticado o el rol del usuario no está en los roles permitidos
-        if (!$user || !in_array($user->role, $roles)) {
-            abort(403, 'Acceso no autorizado.');
+        if (!Auth::check() || Auth::user()->role !== $role) {
+            abort(403, 'Acceso denegado.');
         }
 
         return $next($request);

@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Contracts\EmpleadoServiceInterface;
 use App\Models\User; // Ahora usamos el modelo User
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class EmpleadoService implements EmpleadoServiceInterface
 {
@@ -14,11 +16,11 @@ class EmpleadoService implements EmpleadoServiceInterface
             if (strtolower($user->role) !== 'administrador') {
                 abort(403, 'No tienes permiso para ver empleados.');
             }
-        
-            return User::where('role', 'Empleado')->get(); // O normaliza también esta comparación si es necesario
+
+            return User::where('role', 'Empleado')->paginate(10); // O normaliza también esta comparación si es necesario
         }
-        
-    
+
+
 
     // Obtener un empleado por ID con verificación de permisos
     public function getEmpleadoById($id, $user)
@@ -44,7 +46,18 @@ class EmpleadoService implements EmpleadoServiceInterface
         }
 
         // Asegúrate de que el campo 'role' se guarde correctamente en la tabla users
-        return User::create($data);
+        $usernew = User::create(
+        [
+            'name' => $data['nombre'],
+            'email' => $data['email'],
+            'password' =>bcrypt($data['nombre'] ),
+            'role' => $data['rol'],
+            'subrole' => $data['subrol'], // Asignar el subrol
+        ]);
+
+        event(new Registered($usernew));
+
+        return $usernew;
     }
 
     // Asignar un subrol a un empleado (solo para administradores)
@@ -76,7 +89,11 @@ class EmpleadoService implements EmpleadoServiceInterface
             abort(403, 'No tienes permiso para actualizar empleados.');
         }
 
-        $empleado->update($data);
+        $empleado->update([
+            'name' => $data['nombre'],
+            'role' => $data['rol'],
+            'subrole' => $data['subrol'],
+        ]);
         return $empleado;
     }
 

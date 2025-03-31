@@ -20,7 +20,8 @@ class EmpleadoController extends Controller
         $user = $request->user();
         $empleados = $this->empleadoService->getAllEmpleados($user);
 
-        return response()->json($empleados);
+        /*return response()->json($empleados);*/
+        return view('empleados.index', compact('empleados'));
     }
 
     // Obtener un empleado específico por ID
@@ -32,22 +33,35 @@ class EmpleadoController extends Controller
         return response()->json($empleado);
     }
 
+
+    public function create(){
+        return view('empleados.create');
+
+    }
+
     // Crear un nuevo empleado
     public function store(Request $request)
     {
         $user = $request->user();
         $data = $request->validate([
-            'name'    => 'required|string|max:255',
+            'nombre'  => 'required|string|max:255',
             'email'   => 'required|email|unique:users,email',
-            'telefono'=> 'nullable|string|max:15',
             'rol'     => 'required|string|in:administrador,empleado',
-            'subrol' =>'nullable|string|in: Chef, Mesero, Decorador'
+            'subrol'  => 'nullable|string|in:chef,mesero,decorador',
 
         ]);
 
         $empleado = $this->empleadoService->createEmpleado($data, $user);
 
-        return response()->json($empleado, 201); // 201 Created
+        return redirect('/empleados');
+    }
+
+    public function edit($id, Request $request){
+        $user = $request->user();
+        $empleado = $this->empleadoService->getEmpleadoById($id, $user);
+
+        return view('empleados.edit',[ 'empleado' => $empleado, 'user' => $user]);
+
     }
 
     // Asignar un subrol a un empleado
@@ -71,18 +85,15 @@ class EmpleadoController extends Controller
     {
         $user = $request->user();
         $data = $request->validate([
-            'name'    => 'sometimes|required|string|max:255',
+            'nombre'    => 'sometimes|required|string|max:255',
             'email'   => 'sometimes|required|email|unique:users,email,' . $id,
-            'telefono'=> 'nullable|string|max:15',
             'rol'     => 'sometimes|required|string|in:administrador,empleado',
+            'subrol'    => 'sometimes|required|string|in:chef,mesero,decorador',
         ]);
 
         $empleado = $this->empleadoService->updateEmpleado($id, $data, $user);
 
-        return response()->json([
-            'message' => 'Empleado actualizado con éxito',
-            'data' => $empleado,
-        ]);
+        return redirect('/empleados');
     }
 
     // Eliminar un empleado
@@ -92,6 +103,6 @@ class EmpleadoController extends Controller
 
         $this->empleadoService->deleteEmpleado($id, $user);
 
-        return response()->json(['message' => 'Empleado eliminado con éxito']);
+        return redirect('/empleados');
     }
 }

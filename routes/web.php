@@ -13,6 +13,7 @@ use App\Http\Controllers\{
     DashboardController,
     AdminController
 };
+use App\Http\Middleware\Role;
 use Illuminate\Support\Facades\Route;
 
 // Página de bienvenida
@@ -57,7 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}', [TareaController::class, 'show'])->name('tareas.show');
 
         // Solo administradores pueden crear, editar y eliminar tareas
-        Route::middleware('role:administrador')->group(function () {
+        Route::middleware([Role::class . ':administrador'])->group(function () {
             Route::get('/create', [TareaController::class, 'create'])->name('tareas.create');
             Route::post('/', [TareaController::class, 'store'])->name('tareas.store');
             Route::get('/{id}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
@@ -67,20 +68,27 @@ Route::middleware('auth')->group(function () {
     });
 
     // Rutas de empleados (solo administradores)
-    Route::prefix('empleados')->middleware('role:administrador')->group(function () {
-        Route::get('/', [EmpleadoController::class, 'index'])->name('empleados.index');
-        Route::get('/{id}', [EmpleadoController::class, 'show'])->name('empleados.show');
+    Route::prefix('empleados')->group(function () {
+        // Solo administradores pueden crear, editar y eliminar tareas
+        Route::middleware([Role::class . ':administrador'])->group(function () {
+
         Route::get('/create', [EmpleadoController::class, 'create'])->name('empleados.create');
         Route::post('/', [EmpleadoController::class, 'store'])->name('empleados.store');
         Route::get('/{id}/edit', [EmpleadoController::class, 'edit'])->name('empleados.edit');
         Route::put('/{id}', [EmpleadoController::class, 'update'])->name('empleados.update');
-        Route::delete('/{id}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
+        Route::delete('/{id}/destroy', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
+     });
+
+
+        // Rutas públicas: listado y detalle
+        Route::get('/', [EmpleadoController::class, 'index'])->name('empleados.index');
+        Route::get('/{id}', [EmpleadoController::class, 'show'])->name('empleados.show');
     });
 
     // Rutas de eventos
     Route::prefix('eventos')->group(function () {
         // Rutas protegidas (crear, editar, eliminar) se definen primero
-        Route::middleware('role:administrador,administrador Stock')->group(function () {
+        Route::middleware([Role::class . ':administrador, administrador Stock'])->group(function () {
             Route::get('/create', [EventoController::class, 'create'])->name('eventos.create');
             Route::post('/', [EventoController::class, 'store'])->name('eventos.store');
             Route::get('/{id}/edit', [EventoController::class, 'edit'])->name('eventos.edit');
@@ -95,12 +103,12 @@ Route::middleware('auth')->group(function () {
     // Rutas de insumos
     Route::prefix('insumos')->group(function () {
         // Visualización de insumos para administradores
-        Route::middleware('role:administrador')->group(function () {
+        Route::middleware([Role::class . ':administrador'])->group(function () {
             Route::get('/', [InsumoController::class, 'index'])->name('insumos.index');
         });
-    
+
         // Operaciones de creación, edición y eliminación para administradores de stock
-        Route::middleware('role:administrador Stock')->group(function () {
+        Route::middleware([Role::class . ':administrador Stock'])->group(function () {
             Route::get('/create', [InsumoController::class, 'create'])->name('insumos.create');
             Route::post('/', [InsumoController::class, 'store'])->name('insumos.store');
             Route::get('/{id}/edit', [InsumoController::class, 'edit'])->name('insumos.edit');
