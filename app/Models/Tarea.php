@@ -11,7 +11,7 @@ class Tarea extends Model
     use HasFactory;
     protected $table = 'tareas';
 
-    protected $fillable = ['nombre', 'descripcion', 'fechaTarea', 'empleado_id', 'estado', 'evento_id'];
+    protected $fillable = ['nombre', 'descripcion', 'fechaTarea', 'empleado_id', 'estado', 'evento_id','empleado_id'];
 
     public function empleado()
     {
