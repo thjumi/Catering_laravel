@@ -42,7 +42,7 @@
                                         <td class="px-4 py-2 border-b text-white border-gray-300">
                                             <!-- Botón Ver Detalles -->
                                             <a href="{{ route('eventos.show', $evento->id) }}" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm">Ver Detalles</a>
-                                            
+
                                             <!-- Botón Editar -->
                                             <a href="{{ route('eventos.edit', $evento->id) }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">Editar</a>
 

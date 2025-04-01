@@ -39,7 +39,7 @@ public function store(Request $request)
 
         if ($user->role === 'empleado') {
             return redirect()->route('dashboard.empleado');
-        } elseif ($user->role === 'administrador stock') {
+        } elseif ($user->role === 'administrador Stock') {
             return redirect()->route('dashboard.stock');
         } elseif ($user->role === 'administrador') {
             return redirect()->route('dashboard.admin');
