@@ -7,6 +7,16 @@
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+            @if ($errors->any())
+                <div class="alert alert-danger mb-4">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li class="text-red-600">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('tareas.update', $tarea->id) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -51,6 +61,17 @@
                                 {{ $evento->nombre }}
                             </option>
                         @endforeach
+                    </select>
+                </div>
+
+                <!-- Campo para editar Estado -->
+                <div class="mb-4">
+                    <label for="estado" class="block text-gray-700 font-bold">Estado:</label>
+                    <select name="estado" id="estado"
+                        class="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300">
+                        <option value="Pendiente" {{ $tarea->estado == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
+                        <option value="En Proceso" {{ $tarea->estado == 'En Proceso' ? 'selected' : '' }}>En Proceso</option>
+                        <option value="Completada" {{ $tarea->estado == 'Completada' ? 'selected' : '' }}>Completada</option>
                     </select>
                 </div>
 

@@ -114,3 +114,6 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
+Route::put('/tareas/{id}/actualizar-estado', [TareaController::class, 'actualizarEstado'])
+    ->name('tareas.actualizarEstado')
+    ->middleware(['auth', 'role:Administrador']);

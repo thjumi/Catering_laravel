@@ -17,42 +17,42 @@ class TareaController extends Controller
         $this->tareaService = $tareaService;
     }
 
-    // Obtener todas las tareas según el rol del usuario
+    // Listado de tareas (Índice)
     public function index(Request $request)
     {
-        $usuario = $request->user();
-        $tareas = $this->tareaService->getAllTareas($usuario);
-
-        return view('tareas.index', compact('tareas'));
+        // Se espera que el servicio retorne una colección de tareas
+        $tareas = $this->tareaService->getAllTareas($request->user());
+        return view('tareas.index', ['tareas' => $tareas]);
     }
 
-    // Obtener una tarea específica por ID
+    // Mostrar detalles de una tarea
     public function show($id)
     {
         $tarea = Tarea::with(['evento', 'empleado'])->findOrFail($id);
         return view('tareas.show', compact('tarea'));
     }
-    
 
-    // Mostrar formulario de creación de tarea
+    // Formulario para crear una tarea
     public function create()
     {
-        $usuarios = User::where('role', 'empleado')->get(); // Obtener usuarios con rol empleado
-        $eventos = Evento::all(); // Obtener todos los eventos disponibles
+        // Se asume que los usuarios con rol "empleado" se obtienen de esta forma
+        $usuarios = User::where('role', 'empleado')->get();
+        $eventos = Evento::all();
         return view('tareas.create', compact('usuarios', 'eventos'));
     }
 
-    // Crear una nueva tarea
+    // Guardar tarea nueva
     public function store(Request $request)
     {
         $usuario = $request->user();
 
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre'      => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'fechaTarea' => 'required|date',
+            'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
-            'evento_id' => 'required|exists:eventos,id', // Validar el evento
+            'evento_id'   => 'required|exists:eventos,id',
+            'estado'      => 'required|in:Pendiente,En Proceso,Completada',
         ]);
 
         $this->tareaService->createTarea($data, $usuario);
@@ -60,24 +60,25 @@ class TareaController extends Controller
         return redirect()->route('tareas.index')->with('success', 'Tarea creada con éxito');
     }
 
-    // Mostrar el formulario de edición de una tarea
+    // Formulario para editar una tarea
     public function edit($id)
     {
         $tarea = Tarea::findOrFail($id);
-        $eventos = Evento::all(); // Obtener todos los eventos disponibles
-        $empleados = User::where('role', 'empleado')->get(); // Obtener los empleados
+        $eventos = Evento::all();
+        $empleados = User::where('role', 'empleado')->get();
         return view('tareas.edit', compact('tarea', 'eventos', 'empleados'));
     }
 
-    // Actualizar una tarea existente
+    // Actualizar tarea existente
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre'      => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'fechaTarea' => 'required|date',
+            'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
-            'evento_id' => 'required|exists:eventos,id', // Asegurarse de que el evento existe
+            'evento_id'   => 'required|exists:eventos,id',
+            'estado'      => 'required|in:Pendiente,En Proceso,Completada',
         ]);
 
         $tarea = Tarea::findOrFail($id);
@@ -95,4 +96,3 @@ class TareaController extends Controller
         return redirect()->route('tareas.index')->with('success', 'Tarea eliminada con éxito');
     }
 }
-
