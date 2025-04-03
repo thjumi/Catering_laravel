@@ -10,8 +10,17 @@ class EventoController extends Controller
 {
     public function index(Request $request)
     {
-        $eventos = Evento::with('empleado')->get(); // Traer eventos con empleado asignado
-        return view('eventos.index', compact('eventos'));
+        $fecha = $request->input('fecha'); // Obtén la fecha del request
+
+        if ($fecha) {
+            // Filtra los eventos por fecha
+            $eventos = Evento::whereDate('fecha', $fecha)->with('empleado')->get();
+        } else {
+            // Si no hay fecha, muestra todos los eventos
+            $eventos = Evento::with('empleado')->get();
+        }
+
+        return view('eventos.index', compact('eventos')); // Pasar los eventos filtrados a la vista
     }
 
     public function create()
@@ -19,13 +28,12 @@ class EventoController extends Controller
         $usuarios = User::where('role', 'empleado')->get(); // Obtener usuarios con rol empleado
         return view('eventos.create', compact('usuarios'));
     }
+
     public function show($id)
     {
-        $evento = Evento::with('empleado')->findOrFail($id); // Cargar evento con la relación `empleado`
-
+        $evento = Evento::with('empleado')->findOrFail($id); // Cargar evento con la relación empleado
         return view('eventos.show', compact('evento'));
     }
-
 
     public function store(Request $request)
     {
@@ -71,6 +79,7 @@ class EventoController extends Controller
 
         return redirect()->route('eventos.index')->with('success', 'Evento actualizado con éxito');
     }
+
     public function destroy($id)
     {
         $evento = Evento::findOrFail($id); // Buscar el evento por su ID
@@ -82,5 +91,4 @@ class EventoController extends Controller
             return redirect()->route('eventos.index')->with('error', 'Error al eliminar el evento: ' . $e->getMessage());
         }
     }
-
 }
