@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\InsumoService;
+use App\Models\User;
 
 class InsumoController extends Controller
 {
@@ -11,6 +12,12 @@ class InsumoController extends Controller
     public function __construct(InsumoService $insumoService)
     {
         $this->insumoService = $insumoService;
+    }
+
+    public function create()
+    {
+        $usuarios = User::where('role', 'administrador Stock')->get();
+        return view('insumos.create', compact('usuarios'));
     }
     public function edit($id)
     {

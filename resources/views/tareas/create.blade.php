@@ -58,6 +58,15 @@
                         @endforeach
                     </select>
                 </div>
+                
+                <div class="mb-4">
+                    <label for="disponibilidad" class="block text-sm font-medium text-gray-700">Disponibilidad:</label>
+                    <select name="disponibilidad" id="disponibilidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="1">Completado</option>
+                        <option value="1">Proceso</option>
+                        <option value="0">Pendiente</option>
+                    </select>
+                </div>
 
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Crear Tarea

@@ -17,31 +17,40 @@ class TareaController extends Controller
         $this->tareaService = $tareaService;
     }
 
-    // Listado de tareas (Índice)
+    // Obtener todas las tareas según el rol del usuario (vista del Administrador)
     public function index(Request $request)
     {
-        // Se espera que el servicio retorne una colección de tareas
-        $tareas = $this->tareaService->getAllTareas($request->user());
+        $usuario = $request->user();
+        $estado = $request->input('estado'); // Obtener el estado del filtro
+        
+        // Se asume que getAllTareas retorna una colección
+        $tareas = $this->tareaService->getAllTareas($usuario);
+        
+        if ($estado) {
+            $tareas = $tareas->filter(function ($tarea) use ($estado) {
+                return $tarea->estado === $estado;
+            });
+        }
+    
         return view('tareas.index', ['tareas' => $tareas]);
     }
-
-    // Mostrar detalles de una tarea
+    
+    // Obtener una tarea específica por ID
     public function show($id)
     {
         $tarea = Tarea::with(['evento', 'empleado'])->findOrFail($id);
         return view('tareas.show', compact('tarea'));
     }
-
-    // Formulario para crear una tarea
+    
+    // Mostrar formulario de creación de tarea
     public function create()
     {
-        // Se asume que los usuarios con rol "empleado" se obtienen de esta forma
         $usuarios = User::where('role', 'empleado')->get();
         $eventos = Evento::all();
         return view('tareas.create', compact('usuarios', 'eventos'));
     }
-
-    // Guardar tarea nueva
+    
+    // Crear una nueva tarea
     public function store(Request $request)
     {
         $usuario = $request->user();
@@ -52,15 +61,14 @@ class TareaController extends Controller
             'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
             'evento_id'   => 'required|exists:eventos,id',
-            'estado'      => 'required|in:Pendiente,En Proceso,Completada',
         ]);
 
         $this->tareaService->createTarea($data, $usuario);
 
         return redirect()->route('tareas.index')->with('success', 'Tarea creada con éxito');
     }
-
-    // Formulario para editar una tarea
+    
+    // Mostrar formulario de edición de una tarea
     public function edit($id)
     {
         $tarea = Tarea::findOrFail($id);
@@ -68,8 +76,8 @@ class TareaController extends Controller
         $empleados = User::where('role', 'empleado')->get();
         return view('tareas.edit', compact('tarea', 'eventos', 'empleados'));
     }
-
-    // Actualizar tarea existente
+    
+    // Actualizar una tarea existente
     public function update(Request $request, $id)
     {
         $data = $request->validate([
@@ -78,7 +86,6 @@ class TareaController extends Controller
             'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
             'evento_id'   => 'required|exists:eventos,id',
-            'estado'      => 'required|in:Pendiente,En Proceso,Completada',
         ]);
 
         $tarea = Tarea::findOrFail($id);
@@ -86,7 +93,7 @@ class TareaController extends Controller
 
         return redirect()->route('tareas.index')->with('success', 'Tarea actualizada con éxito');
     }
-
+    
     // Eliminar una tarea
     public function destroy($id)
     {
@@ -94,5 +101,24 @@ class TareaController extends Controller
         $tarea->delete();
 
         return redirect()->route('tareas.index')->with('success', 'Tarea eliminada con éxito');
+    }
+    
+    // Actualizar el estado de una tarea (solo para Administrador)
+    public function actualizarEstado(Request $request, $id)
+    {
+        if (!$request->user()->hasRole('Administrador')) {
+            abort(403, 'No tienes permiso para cambiar el estado de las tareas.');
+        }
+
+        $tarea = Tarea::findOrFail($id);
+
+        $request->validate([
+            'estado' => 'required|in:Pendiente,En Proceso,Completada',
+        ]);
+
+        $tarea->estado = $request->estado;
+        $tarea->save();
+
+        return redirect()->back()->with('success', 'Estado de la tarea actualizado correctamente.');
     }
 }
