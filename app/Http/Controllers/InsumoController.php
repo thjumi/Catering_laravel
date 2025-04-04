@@ -24,7 +24,7 @@ class InsumoController extends Controller
         $usuario = request()->user();
 
         // Check user permissions
-        if ($usuario->role !== 'administrador_stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permisos para editar insumos.');
         }
 
@@ -61,7 +61,7 @@ class InsumoController extends Controller
         $usuario = $request->user();
 
         // Verificar que el usuario sea Administrador o Administrador de Stock
-        if ($usuario->role !== 'administrador' && $usuario->role !== 'administrador_stock') {
+        if ($usuario->role !== 'administrador' && $usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permiso para ver este insumo.');
         }
 
@@ -75,7 +75,7 @@ class InsumoController extends Controller
     {
         $usuario = $request->user();
 
-        if ($usuario->role !== 'administrador_stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permisos para crear insumos.');
         }
 
@@ -91,7 +91,7 @@ class InsumoController extends Controller
 
         $insumo = $this->insumoService->createInsumo($data, $usuario);
 
-        return redirect()->route('insumos.index'); // Redirigir al listado de insumos
+        return redirect()->route('dashboard.stock'); // Redirigir al listado de insumos
     }
 
     // Actualizar un insumo existente (solo para Administrador de Stock)
@@ -99,7 +99,7 @@ class InsumoController extends Controller
     {
         $usuario = $request->user();
 
-        if ($usuario->role !== 'administrador_stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permisos para actualizar insumos.');
         }
 
@@ -123,7 +123,7 @@ class InsumoController extends Controller
     {
         $usuario = $request->user();
 
-        if ($usuario->role !== 'administrador_stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permisos para eliminar insumos.');
         }
 
@@ -137,7 +137,7 @@ class InsumoController extends Controller
     {
         $usuario = $request->user();
 
-        if ($usuario->role !== 'administrador_stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permisos para asignar insumos a eventos.');
         }
 

@@ -118,6 +118,9 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
         });
     });
+
+    
+   
 });
 Route::put('/tareas/{id}/actualizar-estado', [TareaController::class, 'actualizarEstado'])
     ->name('tareas.actualizarEstado')

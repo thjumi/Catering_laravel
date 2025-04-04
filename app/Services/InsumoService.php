@@ -11,7 +11,7 @@ class InsumoService implements InsumoServiceInterface
     // Obtener todos los insumos según el rol del usuario
     public function getAllInsumos($usuario)
     {
-        if ($usuario->role === 'administrador' || $usuario->role === 'administrador stock') {
+        if ($usuario->role === 'administrador' || $usuario->role === 'administrador Stock') {
             return Insumo::all();
         }
 
@@ -23,7 +23,7 @@ class InsumoService implements InsumoServiceInterface
     {
         $insumo = Insumo::findOrFail($id);
 
-        if ($usuario->role === 'administrador' || $usuario->role === 'administrador stock') {
+        if ($usuario->role === 'administrador' || $usuario->role === 'administrador Stock') {
             return $insumo;
         }
 
@@ -33,7 +33,7 @@ class InsumoService implements InsumoServiceInterface
     // Crear un nuevo insumo (solo para el administrador de stock)
     public function createInsumo(array $data, $usuario)
     {
-        if ($usuario->role !== 'administrador stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permiso para crear insumos.');
         }
 
@@ -45,7 +45,7 @@ class InsumoService implements InsumoServiceInterface
     {
         $insumo = Insumo::findOrFail($id);
 
-        if ($usuario->role !== 'administrador stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permiso para actualizar insumos.');
         }
 
@@ -58,7 +58,7 @@ class InsumoService implements InsumoServiceInterface
     {
         $insumo = Insumo::findOrFail($id);
 
-        if ($usuario->role !== 'administrador stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permiso para eliminar insumos.');
         }
 
@@ -68,7 +68,7 @@ class InsumoService implements InsumoServiceInterface
     // Asignar un insumo a un evento (solo para el administrador de stock)
     public function asignarInsumoAEvento($insumoId, $eventoId, $cantidad, $usuario)
     {
-        if ($usuario->role !== 'administrador stock') {
+        if ($usuario->role !== 'administrador Stock') {
             abort(403, 'No tienes permiso para asignar insumos a eventos.');
         }
 
