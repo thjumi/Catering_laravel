@@ -22,26 +22,26 @@ class TareaController extends Controller
     {
         $usuario = $request->user();
         $estado = $request->input('estado'); // Obtener el estado del filtro
-        
+
         // Se asume que getAllTareas retorna una colección
         $tareas = $this->tareaService->getAllTareas($usuario);
-        
+
         if ($estado) {
             $tareas = $tareas->filter(function ($tarea) use ($estado) {
                 return $tarea->estado === $estado;
             });
         }
-    
+
         return view('tareas.index', ['tareas' => $tareas]);
     }
-    
+
     // Obtener una tarea específica por ID
     public function show($id)
     {
         $tarea = Tarea::with(['evento', 'empleado'])->findOrFail($id);
         return view('tareas.show', compact('tarea'));
     }
-    
+
     // Mostrar formulario de creación de tarea
     public function create()
     {
@@ -49,7 +49,7 @@ class TareaController extends Controller
         $eventos = Evento::all();
         return view('tareas.create', compact('usuarios', 'eventos'));
     }
-    
+
     // Crear una nueva tarea
     public function store(Request $request)
     {
@@ -67,7 +67,7 @@ class TareaController extends Controller
 
         return redirect()->route('tareas.index')->with('success', 'Tarea creada con éxito');
     }
-    
+
     // Mostrar formulario de edición de una tarea
     public function edit($id)
     {
@@ -76,7 +76,7 @@ class TareaController extends Controller
         $empleados = User::where('role', 'empleado')->get();
         return view('tareas.edit', compact('tarea', 'eventos', 'empleados'));
     }
-    
+
     // Actualizar una tarea existente
     public function update(Request $request, $id)
     {
@@ -93,7 +93,7 @@ class TareaController extends Controller
 
         return redirect()->route('tareas.index')->with('success', 'Tarea actualizada con éxito');
     }
-    
+
     // Eliminar una tarea
     public function destroy($id)
     {
@@ -101,8 +101,15 @@ class TareaController extends Controller
         $tarea->delete();
 
         return redirect()->route('tareas.index')->with('success', 'Tarea eliminada con éxito');
+        if ($tarea) {
+            $tarea->delete();
+            return redirect()->route('tareas.index')->with('success', 'Tarea eliminada correctamente');
+        }
+
+        return redirect()->route('tareas.index')->with('error', 'Tarea no encontrada');
     }
-    
+
+
     // Actualizar el estado de una tarea (solo para Administrador)
     public function actualizarEstado(Request $request, $id)
     {

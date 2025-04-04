@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
     // Rutas de tareas
     Route::prefix('tareas')->group(function () {
         Route::get('/', [TareaController::class, 'index'])->name('tareas.index');
-        
+
         // Rutas específicas primero para evitar conflictos con dinámicas
         Route::middleware([Role::class . ':administrador'])->group(function () {
             Route::get('/create', [TareaController::class, 'create'])->name('tareas.create');
@@ -63,6 +63,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
             Route::put('/{id}', [TareaController::class, 'update'])->name('tareas.update');
             Route::delete('/{id}', [TareaController::class, 'destroy'])->name('tareas.destroy');
+            Route::delete('/tareas/{id}', [TareaController::class, 'destroy'])->name('tareas.delete');
+
         });
 
         // Ruta dinámica al final
