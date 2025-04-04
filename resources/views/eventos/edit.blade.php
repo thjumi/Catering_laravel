@@ -65,7 +65,7 @@
                         class="w-full mt-1 p-2 bg-gray-700 text-black border border-gray-600 rounded focus:outline-none focus:ring focus:ring-blue-500">
                     <option value="">Seleccione un empleado</option>
                     @foreach($usuarios as $usuario)
-                        <option value="{{ $usuario->id }}" {{ old('usuario_id', $evento->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                        <option value="{{ $usuario->id }}" {{ old('usuario_id', $evento->empleado_id) == $usuario->id ? 'selected' : '' }}>
                             {{ $usuario->name }} (ID: {{ $usuario->id }})
                         </option>
                     @endforeach

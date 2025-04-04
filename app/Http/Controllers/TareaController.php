@@ -61,6 +61,7 @@ class TareaController extends Controller
             'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
             'evento_id'   => 'required|exists:eventos,id',
+            'estado'      => 'required|in:Pendiente,En Proceso,Completada',
         ]);
 
         $this->tareaService->createTarea($data, $usuario);
@@ -86,10 +87,18 @@ class TareaController extends Controller
             'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
             'evento_id'   => 'required|exists:eventos,id',
+            'estado'      => 'required|in:Pendiente,En Proceso,Completada',
         ]);
 
         $tarea = Tarea::findOrFail($id);
-        $tarea->update($data);
+        $tarea->update([
+            'nombre' => $data['nombre'],
+            'descripcion' => $data['descripcion'],
+            'fechaTarea' => $data['fechaTarea'],
+            'empleado_id' => $data['empleado_id'],
+            'estado' => $data['estado'],
+            'evento_id' => $data['evento_id'],
+             ]);
 
         return redirect()->route('tareas.index')->with('success', 'Tarea actualizada con éxito');
     }

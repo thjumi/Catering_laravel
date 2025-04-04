@@ -14,13 +14,19 @@ class EventoController extends Controller
 
         if ($fecha) {
             // Filtra los eventos por fecha
-            $eventos = Evento::whereDate('fecha', $fecha)->with('empleado')->get();
+            $eventos = Evento::whereDate('fecha', $fecha)->with('empleado')->paginate(10);
         } else {
             // Si no hay fecha, muestra todos los eventos
-            $eventos = Evento::with('empleado')->get();
+            $eventos = Evento::with('empleado')->paginate(10);
         }
 
         return view('eventos.index', compact('eventos')); // Pasar los eventos filtrados a la vista
+    }
+
+    public function obtenerEventosFecha($fecha, $fe)
+    {
+        $eventos = Evento::with('empleado')->whereDate('fecha', $fecha)->paginate(10);
+        return response()->json($eventos, 200, [], JSON_PRETTY_PRINT);
     }
 
     public function create()

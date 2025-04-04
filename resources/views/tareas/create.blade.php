@@ -58,13 +58,13 @@
                         @endforeach
                     </select>
                 </div>
-                
+
                 <div class="mb-4">
-                    <label for="disponibilidad" class="block text-sm font-medium text-gray-700">Disponibilidad:</label>
-                    <select name="disponibilidad" id="disponibilidad" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="1">Completado</option>
-                        <option value="1">Proceso</option>
-                        <option value="0">Pendiente</option>
+                    <label for="estado" class="block text-sm font-medium text-gray-700">Estado:</label>
+                    <select name="estado" id="estado" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="Completada">Completada</option>
+                        <option value="En Proceso">En Proceso</option>
+                        <option value="Pendiente">Pendiente</option>
                     </select>
                 </div>
 

@@ -94,8 +94,11 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [EventoController::class, 'edit'])->name('eventos.edit');
             Route::put('/{id}', [EventoController::class, 'update'])->name('eventos.update');
             Route::delete('/{id}', [EventoController::class, 'destroy'])->name('eventos.destroy');
+
         });
 
+        // Ruta para obtener eventos por fecha (ejemplo para empleados)
+        Route::get('/{fecha},{fe}', [EventoController::class, 'obtenerEventosFecha']);
         // Rutas públicas: listado y detalle
         Route::get('/', [EventoController::class, 'index'])->name('eventos.index');
         Route::get('/{id}', [EventoController::class, 'show'])->name('eventos.show');

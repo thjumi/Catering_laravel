@@ -40,6 +40,8 @@
                                 <td class="px-4 py-2">
                                     @if($tarea->estado == 'Pendiente')
                                         <span class="px-2 py-1 bg-yellow-200 text-yellow-800 rounded">Pendiente</span>
+                                    @elseif($tarea->estado == 'En Proceso')
+                                        <span class="px-2 py-1 bg-blue-200 text-blue-800 rounded">En Proceso</span>
                                     @elseif($tarea->estado == 'Completada')
                                         <span class="px-2 py-1 bg-green-200 text-green-800 rounded">Completada</span>
                                     @else
