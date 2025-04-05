@@ -23,6 +23,9 @@
             height: 100vh;
             transition: transform 0.3s ease;
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .sidebar.hidden {
@@ -45,6 +48,7 @@
         .side-menu {
             list-style: none;
             padding: 0;
+            margin-top: 2rem;
         }
 
         .side-menu li {
@@ -70,13 +74,14 @@
         }
 
         .logout-button {
-            margin-top: 2rem;
             background-color: #f5f0da;
             color: #d4af37;
             padding: 10px 15px;
             border-radius: 10px;
             display: inline-block;
             font-weight: 600;
+            border: none;
+            width: 100%;
         }
 
         .logout-button:hover {
@@ -148,18 +153,33 @@
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <div class="brand">
-        <img src="{{ asset('img/home/logp.png') }}" alt="Logo de la Empresa">
-        <h4>Empleado</h4>
+        <div>
+            <!-- Branding -->
+            <div class="brand">
+                <img src="{{ asset('img/home/logp.png') }}" alt="Logo de la Empresa">
+                <h4>Empleado</h4>
+            </div>
+
+            <!-- Menú -->
+            <ul class="side-menu">
+                <li class="active">
+                    <a href="/dashboard"><i class="bx bx-home"></i>Inicio</a>
+                </li>
+                <li>
+            </ul>
         </div>
-        <ul class="side-menu mt-4">
-            <li class="active"><a href="/dashboard"><i class="bx bx-home"></i>Inicio</a></li>
-            <li><a href="/tareas"><i class="bx bx-task"></i>Mis Tareas</a></li>
-            <li><a href="/logout" class="logout-button"><i class="bx bx-log-out"></i>Salir</a></li>
-        </ul>
+
+        <!-- Botón de logout -->
+        <div class="text-center">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="logout-button">
+                    <i class="bx bx-log-out"></i> Cerrar Sesión
+                </button>
+            </form>
+        </div>
     </div>
 
-    <!-- Main Content -->
     <div id="content">
         <nav class="navbar mb-4">
             <i class="bx bx-menu" id="toggle-sidebar"></i>
@@ -169,11 +189,31 @@
         <main>
             <h2 class="text-gold text-center mb-4">Tareas Asignadas</h2>
 
-            <div class="mb-4 text-center">
-                <label for="fecha" class="form-label fw-semibold">Selecciona una fecha:</label>
-                <input type="date" id="fecha" onchange="cargarTareas()" class="form-control w-auto d-inline-block">
+            <!-- Filtros -->
+            <div class="row mb-4 justify-content-center">
+                <div class="col-md-3">
+                    <label for="fecha" class="form-label fw-semibold">Fecha</label>
+                    <input type="date" id="fecha" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label for="estado" class="form-label fw-semibold">Estado</label>
+                    <select id="estado" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en progreso">En progreso</option>
+                        <option value="completado">Completado</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="evento" class="form-label fw-semibold">Evento</label>
+                    <input type="text" id="evento" class="form-control" placeholder="Buscar evento...">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button onclick="filtrarTareas()" class="btn btn-gold w-100">Filtrar</button>
+                </div>
             </div>
 
+            <!-- Tabla de tareas -->
             <div class="table-responsive bg-white rounded shadow p-3">
                 <table class="table table-bordered table-hover">
                     <thead class="text-center">
@@ -183,23 +223,17 @@
                             <th>Descripción</th>
                             <th>Fecha</th>
                             <th>Estado</th>
-                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-tareas-body">
                         @foreach($tareasAsignadas as $tarea)
-                        <tr>
-                            <td>{{ $tarea->evento->nombre }}</td>
-                            <td>{{ $tarea->nombre }}</td>
-                            <td>{{ $tarea->descripcion }}</td>
-                            <td>{{ $tarea->fechaTarea }}</td>
-                            <td>{{ $tarea->estado }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('tareas.edit', $tarea->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                                <a href="{{ route('tareas.delete', $tarea->id) }}" class="btn btn-danger btn-sm">Eliminar</a>
-                                <a href="{{ route('tareas.show', $tarea->id) }}" class="btn btn-primary btn-sm">Ver</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>{{ $tarea->evento->nombre }}</td>
+                                <td>{{ $tarea->nombre }}</td>
+                                <td>{{ $tarea->descripcion }}</td>
+                                <td>{{ $tarea->fechaTarea }}</td>
+                                <td>{{ $tarea->estado }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -208,25 +242,33 @@
         </main>
     </div>
 
+    <!-- Script para filtros -->
     <script>
         document.getElementById('toggle-sidebar').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('show');
             document.getElementById('content').classList.toggle('expanded');
         });
 
-        async function cargarTareas() {
+        async function filtrarTareas() {
             let fecha = document.getElementById('fecha').value;
-            if (!fecha) return;
+            let estado = document.getElementById('estado').value;
+            let evento = document.getElementById('evento').value;
+
+            let query = new URLSearchParams({
+                fecha: fecha,
+                estado: estado,
+                evento: evento
+            }).toString();
 
             try {
-                let response = await fetch(`/empleado/${fecha}`);
+                let response = await fetch(`/empleado/filtro?${query}`);
                 let data = await response.json();
 
                 let tbody = document.getElementById('tabla-tareas-body');
                 tbody.innerHTML = '';
 
                 if (data.data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No hay tareas para esta fecha.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No hay tareas para estos filtros.</td></tr>';
                     return;
                 }
 
@@ -239,18 +281,16 @@
                             <td>${tarea.fechaTarea}</td>
                             <td>${tarea.estado}</td>
                             <td class="text-center">
-                                <a href="/tareas/${tarea.id}/edit" class="btn btn-warning btn-sm">Editar</a>
-                                <a href="/tareas/${tarea.id}/delete" class="btn btn-danger btn-sm">Eliminar</a>
                                 <a href="/tareas/${tarea.id}" class="btn btn-primary btn-sm">Ver</a>
                             </td>
                         </tr>
                     `;
                 });
             } catch (error) {
-                console.error('Error al cargar tareas:', error);
+                console.error('Error al filtrar tareas:', error);
             }
         }
     </script>
 </body>
-</html>
 
+</html>

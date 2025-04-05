@@ -21,19 +21,50 @@ class TareaController extends Controller
     public function index(Request $request)
     {
         $usuario = $request->user();
-        $estado = $request->input('estado'); // Obtener el estado del filtro
-
-        // Se asume que getAllTareas retorna una colección
+    
+        // Filtros recibidos desde la vista
+        $estado = $request->input('estado');
+        $empleadoId = $request->input('empleado_id');
+        $fechaDesde = $request->input('fecha_desde');
+        $fechaHasta = $request->input('fecha_hasta');
+        $eventoId = $request->input('evento_id');
+    
+        // Obtener todas las tareas según el rol del usuario
         $tareas = $this->tareaService->getAllTareas($usuario);
-
+    
+        // Aplicar filtros si existen
         if ($estado) {
             $tareas = $tareas->filter(function ($tarea) use ($estado) {
                 return $tarea->estado === $estado;
             });
         }
-
-        return view('tareas.index', ['tareas' => $tareas]);
+    
+        if ($empleadoId) {
+            $tareas = $tareas->filter(function ($tarea) use ($empleadoId) {
+                return $tarea->empleado_id == $empleadoId;
+            });
+        }
+    
+        if ($eventoId) {
+            $tareas = $tareas->filter(function ($tarea) use ($eventoId) {
+                return $tarea->evento_id == $eventoId;
+            });
+        }
+    
+        if ($request->filled('fecha')) {
+            $tareas = $tareas->filter(function ($tarea) use ($request) {
+                return \Carbon\Carbon::parse($tarea->fechaTarea)->toDateString() === $request->fecha;
+            });
+        }
+    
+        // Listado de empleados y eventos para el formulario de filtros
+        $empleados = User::where('role', 'empleado')->get();
+        $eventos = Evento::all();
+    
+        // Retornar la vista con las tareas filtradas
+        return view('tareas.index', compact('tareas', 'empleados', 'eventos'));
     }
+    
 
     // Obtener una tarea específica por ID
     public function show($id)
@@ -137,4 +168,31 @@ class TareaController extends Controller
 
         return redirect()->back()->with('success', 'Estado de la tarea actualizado correctamente.');
     }
+
+
+
+public function filtrarTareas(Request $request)
+{
+    $user = $request->user();
+
+    $query = Tarea::with('evento')
+        ->where('empleado_id', $user->id);
+
+    if ($request->filled('fecha')) {
+        $query->whereDate('fechaTarea', $request->fecha);
+    }
+
+    if ($request->filled('estado')) {
+        $query->where('estado', $request->estado);
+    }
+
+    if ($request->filled('evento')) {
+        $query->whereHas('evento', function ($q) use ($request) {
+            $q->where('nombre', 'like', '%' . $request->evento . '%');
+        });
+    }
+
+    return response()->json(['data' => $query->get()]);
+}
+
 }

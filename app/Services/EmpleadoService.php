@@ -11,14 +11,34 @@ class EmpleadoService implements EmpleadoServiceInterface
 {
     // Obtener todos los empleados (solo para administradores)
 
-        public function getAllEmpleados($user)
-        {
-            if (strtolower($user->role) !== 'administrador') {
-                abort(403, 'No tienes permiso para ver empleados.');
-            }
-
-            return User::where('role', 'Empleado')->paginate(10); // O normaliza también esta comparación si es necesario
+    public function getAllEmpleados($user)
+    {
+        if (strtolower($user->role) !== 'administrador') {
+            abort(403, 'No tienes permiso para ver empleados.');
         }
+    
+        $query = User::query()->where('role', 'empleado');
+    
+        // 🔍 Filtro por nombre
+        if (request()->filled('nombre')) {
+            $query->where('name', 'like', '%' . request('nombre') . '%');
+        }
+    
+        // 🔍 Filtro por subrol (chef, mesero, decorador)
+        if (request()->filled('subrol')) {
+            $query->where('subrole', request('subrol'));
+        }
+    
+        // 🔍 Filtro por email
+        if (request()->filled('email')) {
+            $query->where('email', 'like', '%' . request('email') . '%');
+        }
+    
+        // Puedes añadir más filtros aquí si lo necesitas
+    
+        // Paginación con parámetros de filtro
+        return $query->orderBy('name')->paginate(10)->appends(request()->query());
+    }
 
 
 

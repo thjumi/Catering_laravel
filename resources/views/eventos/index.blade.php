@@ -50,7 +50,7 @@
         <h2 class="gold-title fw-bold mb-4">Gestión de Eventos</h2>
 
         <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-            <!-- Filtro por fecha (JS no usa form) -->
+   
             <div>
                 <label for="fecha" class="form-label mb-0">Filtrar por fecha:</label>
                 <input type="date" id="fecha" onchange="cargarEventos()" class="form-control">
