@@ -10,19 +10,30 @@ class EventoController extends Controller
 {
     public function index(Request $request)
     {
-        $fecha = $request->input('fecha'); // Obtén la fecha del request
-
-        if ($fecha) {
-            // Filtra los eventos por fecha
-            $eventos = Evento::whereDate('fecha', $fecha)->with('empleado')->paginate(10);
-        } else {
-            // Si no hay fecha, muestra todos los eventos
-            $eventos = Evento::with('empleado')->paginate(10);
+        $query = Evento::with('empleado');
+    
+        // Filtros
+        if ($request->filled('fecha')) {
+            $query->whereDate('fecha', $request->fecha);
         }
-
-        return view('eventos.index', compact('eventos')); // Pasar los eventos filtrados a la vista
+    
+        if ($request->filled('num_invitados')) {
+            $query->where('num_invitados', $request->num_invitados);
+        }
+    
+        if ($request->filled('empleado_id')) {
+            $query->where('empleado_id', $request->empleado_id);
+        }
+    
+        $eventos = $query->paginate(10);
+    
+        // Mostrar todos los empleados con el rol correcto
+        $empleados = User::where('role', 'empleado')->get();
+    
+        return view('eventos.index', compact('eventos', 'empleados'));
     }
-
+    
+ 
     public function obtenerEventosFecha($fecha, $fe)
     {
         $eventos = Evento::with('empleado')->whereDate('fecha', $fecha)->paginate(10);
@@ -47,7 +58,7 @@ class EventoController extends Controller
             'nombre' => 'required|string|min:10|max:40',
             'descripcion' => 'nullable|string|min:10|max:250',
             'fecha' => 'required|date',
-            'horario' => 'required|date_format:H:i',
+            'horario' => 'required|date_format:H:i', // sin "A"
             'num_invitados' => 'required|numeric|min:1',
             'usuario_id' => 'required|exists:users,id',
         ]);
@@ -56,6 +67,7 @@ class EventoController extends Controller
         $data['empleado_id'] = $data['usuario_id']; // Asignar usuario a empleado_id
 
         Evento::create($data);
+        
 
         return redirect()->route('eventos.index')->with('success', 'Evento creado con éxito');
     }
@@ -70,12 +82,12 @@ class EventoController extends Controller
     public function update($id, Request $request)
     {
         $data = $request->validate([
-            'nombre' => 'required|string|min:10|max:40',
+            'nombre' => 'nullable|string|min:10|max:40',
             'descripcion' => 'nullable|string|min:10|max:250',
-            'fecha' => 'required|date',
-            'horario' => 'required|date_format:H:i',
-            'num_invitados' => 'required|numeric|min:1',
-            'usuario_id' => 'required|exists:users,id', // Validar usuario
+            'fecha' => 'nullable|date',
+'horario' => 'nullable|date_format:H:i', // Acepta formato 24h (HH:MM)
+            'num_invitados' => 'nullable|numeric|min:1',
+            'usuario_id' => 'nullable|exists:users,id', // Validar usuario
         ]);
 
         $evento = Evento::findOrFail($id);

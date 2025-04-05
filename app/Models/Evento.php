@@ -32,4 +32,9 @@ class Evento extends Model
     {
         return $this->belongsTo(User::class, 'empleado_id'); // Relación con la tabla users
     }
+    public function insumos()
+{
+    return $this->belongsToMany(Insumo::class, 'insumo_evento')->withPivot('cantidad')->withTimestamps();
+}
+
 }

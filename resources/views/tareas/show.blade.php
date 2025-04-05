@@ -1,22 +1,69 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Detalles de la Tarea') }}
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles de la Tarea - Catering Soft</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow sm:rounded-lg p-6">
-                <h3 class="text-lg font-bold">{{ $tarea->nombre }}</h3>
-                <p class="text-gray-700 mt-2"><strong>Descripción:</strong> {{ $tarea->descripcion ?? 'No especificada' }}</p>
-                <p class="text-gray-700 mt-2"><strong>Fecha de Tarea:</strong> {{ $tarea->fechaTarea }}</p>
-                <p class="text-gray-700 mt-2"><strong>Empleado:</strong> {{ $tarea->empleado->name ?? 'No asignado' }}</p>
-                <p class="text-gray-700 mt-2"><strong>Estado:</strong> {{ $tarea->estado }}</p>
-                <div class="mt-4">
-                    <a href="{{ route('tareas.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Volver</a>
-                </div>
-            </div>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #fdfaf5;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card-custom {
+            background-color: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+        }
+
+        .title-gold {
+            color: #d4af37;
+            font-weight: 700;
+        }
+
+        .btn-gold {
+            background-color: #d4af37;
+            color: #000;
+        }
+
+        .btn-gold:hover {
+            background-color: #c9a634;
+            color: #000;
+        }
+
+        .label-bold {
+            font-weight: 600;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="card card-custom">
+        <h2 class="title-gold mb-4">
+            Detalles de la Tarea
+        </h2>
+
+        <h4 class="mb-3">{{ $tarea->nombre }}</h4>
+
+        <p><span class="label-bold">Descripción:</span> {{ $tarea->descripcion ?? 'No especificada' }}</p>
+        <p><span class="label-bold">Fecha de Tarea:</span> {{ $tarea->fechaTarea }}</p>
+        <p><span class="label-bold">Empleado:</span> {{ $tarea->empleado->name ?? 'No asignado' }}</p>
+        <p><span class="label-bold">Estado:</span> {{ $tarea->estado }}</p>
+
+        <div class="mt-4">
+            <a href="{{ route('tareas.index') }}" class="btn btn-gold fw-semibold">
+                ← Volver al Listado
+            </a>
         </div>
     </div>
-</x-app-layout>
+</div>
+
+</body>
+</html>

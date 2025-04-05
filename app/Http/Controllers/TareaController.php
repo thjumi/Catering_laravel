@@ -56,8 +56,8 @@ class TareaController extends Controller
         $usuario = $request->user();
 
         $data = $request->validate([
-            'nombre'      => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
+            'nombre'      => 'required|string|min:5|max:255',
+            'descripcion' => 'nullable|string|min:10|max:255',
             'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
             'evento_id'   => 'required|exists:eventos,id',

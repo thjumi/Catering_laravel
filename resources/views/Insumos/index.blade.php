@@ -1,48 +1,97 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Lista de Insumos') }}
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="es">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 class="text-lg font-semibold">Insumos disponibles</h3>
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Insumos - Catering Soft</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full mt-6 border border-gray-300 border-collapse">
-                            <thead class="bg-gray-100 dark:bg-gray-700">
-                                <tr class="text-left text-gray-700 dark:text-gray-200">
-                                    <th class="px-4 py-2 border-b">ID</th>
-                                    <th class="px-4 py-2 border-b">Nombre</th>
-                                    <th class="px-4 py-2 border-b">Descripción</th>
-                                    <th class="px-4 py-2 border-b">Cantidad</th>
-                                    <th class="px-4 py-2 border-b">Evento Asociado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($insumos as $insumo)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td class="px-4 py-2 border-b">{{ $insumo->id }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $insumo->nombre }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $insumo->descripcion ?? 'Sin descripción' }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $insumo->cantidad }}</td>
-                                        <td class="px-4 py-2 border-b">{{ optional($insumo->evento)->nombre ?? 'Sin evento' }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-4 py-2 text-center text-gray-500">
-                                            No hay insumos registrados.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f9f6f0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .gold-title {
+            color: #d4af37;
+        }
+
+        .table thead {
+            background-color: #f8f9fa;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .card-custom {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .badge-evento {
+            background-color: #d4af37;
+            color: #fff;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-5">
+        <div class="card card-custom p-4">
+            <h2 class="gold-title fw-bold mb-4">Lista de Insumos</h2>
+
+            <h5 class="mb-3">Insumos disponibles:</h5>
+            <a href="{{ route('dashboard.admin') }}" class="btn btn-success ms-auto mb-3">Volver al Dashboard</a>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Eventos Asociados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($insumos as $insumo)
+                            <tr>
+                                <td>{{ $insumo->id }}</td>
+                                <td>{{ $insumo->nombre }}</td>
+                                <td>{{ $insumo->descripcion ?? 'Sin descripción' }}</td>
+                                <td>{{ $insumo->cantidad }}</td>
+                                <td>
+                                    @if($insumo->eventos->isNotEmpty())
+                                        @foreach($insumo->eventos as $evento)
+                                            <span class="badge badge-evento">
+                                                {{ $evento->nombre }} - {{ $evento->pivot->cantidad }} unidad{{ $evento->pivot->cantidad > 1 ? 'es' : '' }}
+                                            </span><br>
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted">Sin evento</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No hay insumos registrados.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</x-app-layout>
+
+</body>
+
+</html>

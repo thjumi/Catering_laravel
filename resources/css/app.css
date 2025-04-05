@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input:focus {
+    border-color: #eab308 !important; /* Amarillo */
+    outline: none !important;
+    box-shadow: 0 0 5px #eab308 !important;
+}

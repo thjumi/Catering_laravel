@@ -21,9 +21,9 @@ class Insumo extends Model
         'stock'
     ];
 
-    public function insumoEvento()
+    public function evento()
     {
-        // Asegúrate de que el modelo InsumoEvento esté correctamente definido.
-        return $this->hasMany(\App\Models\InsumoEvento::class);
+        return $this->belongsToMany(Evento::class, 'insumo_evento')->withPivot('cantidad')->withTimestamps();
     }
+    
 }
