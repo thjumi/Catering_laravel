@@ -19,11 +19,7 @@ class DashboardController extends Controller
     }
 
     // Obtener tareas según la fecha
-    public function obtenerTareasFecha($fecha)
-    {
-        $tareas = Tarea::with('evento')->whereDate('fechaTarea', $fecha)->paginate(10);
-        return response()->json($tareas, 200, [], JSON_PRETTY_PRINT);
-    }
+
 
     // Función para mostrar el stock de insumos
     public function stock()
