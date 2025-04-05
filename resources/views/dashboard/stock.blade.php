@@ -192,10 +192,10 @@
                     <table class="table table-bordered table-hover align-middle">
                         <thead class="table-light text-center">
                             <tr>
-                                <th>ID</th>
+                                <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Cantidad</th>
-                                <th>Acciones</th>
+                                <th>acciones</th>
                             </tr>
                         </thead>
                         <tbody>
