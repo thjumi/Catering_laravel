@@ -36,10 +36,44 @@ class DashboardController extends Controller
         $eventos = Evento::all();
         $totalTareas = Tarea::count();
         $totalEventos = Evento::count();
-        $totalEmpleados = User::where('role', 'empleado')->count(); // Total de empleados
-        $tareasPendientes = Tarea::where('estado', 'pendiente')->count(); // Tareas pendientes
+        $totalEmpleados = User::where('role', 'empleado')->count();
+        $tareasPendientes = Tarea::where('estado', 'pendiente')->count();
         $totalInsumos = Insumo::count();
+    
+        $actividadReciente = [
+            optional(Tarea::latest()->first()) ? '✅ Tarea "' . Tarea::latest()->first()->nombre . '" completada' : null,
+            optional(Evento::latest()->first()) ? '📅 Evento "' . Evento::latest()->first()->nombre . '" añadido' : null,
+            optional(User::where('role', 'empleado')->latest()->first()) ? '➕ Empleado "' . User::where('role', 'empleado')->latest()->first()->name . '" agregado' : null,
+        ];
+        $actividadReciente = array_filter($actividadReciente);
+    
+        // Próximos eventos
+        $proximosEventos = Evento::where('fecha', '>=', now())
+            ->orderBy('fecha')
+            ->take(3)
+            ->get();
 
-        return view('dashboard.admin', compact('eventos', 'totalTareas', 'totalEventos', 'totalEmpleados', 'tareasPendientes', 'totalInsumos'));
+        $notificaciones = [
+            '📌 Recuerda asignar tareas para el evento del viernes.',
+            '📌 Asignar a Sebastian a el evento del 20/06/25'
+            
+        ];
+    
+        // Empleado del mes (puede mejorarse luego con métricas reales)
+        $empleadoDelMes = User::where('role', 'empleado')->inRandomOrder()->first();
+    
+        return view('dashboard.admin', compact(
+            'eventos',
+            'totalTareas',
+            'totalEventos',
+            'totalEmpleados',
+            'tareasPendientes',
+            'totalInsumos',
+            'actividadReciente',
+            'proximosEventos',
+            'notificaciones',
+            'empleadoDelMes'
+        ));
     }
+    
 }

@@ -184,7 +184,8 @@
 	<div class="sidebar">
 		<div>
 			<h2>Catering Soft</h2>
-			<a href="{{ route('empleados.index') }}" class="{{ request()->routeIs('empleados.index') ? 'active' : '' }}">
+			<a href="{{ route('empleados.index') }}"
+				class="{{ request()->routeIs('empleados.index') ? 'active' : '' }}">
 				<i class='bx bx-user'></i> Empleados
 			</a>
 			<a href="{{ route('eventos.index') }}" class="{{ request()->routeIs('eventos.index') ? 'active' : '' }}">
@@ -238,6 +239,7 @@
 			</div>
 		</div>
 
+
 		<!-- Acciones -->
 		<div class="grid actions" style="margin-top: 40px;">
 			<a href="{{ route('empleados.index') }}"><i class='bx bx-user'></i> Gestionar Empleados</a>
@@ -245,6 +247,57 @@
 			<a href="{{ route('tareas.index') }}"><i class='bx bx-task'></i> Gestionar Tareas</a>
 			<a href="{{ route('insumos.index') }}"><i class='bx bx-box'></i> Ver Insumos</a>
 		</div>
-	</div>
+
+		
+		<!-- Actividad reciente, eventos y notificaciones -->
+		<div class="grid" style="margin-top: 40px;">
+			<!-- Actividad reciente -->
+			<div class="card">
+				<h3>Actividad reciente</h3>
+				@if(count($actividadReciente) > 0)
+					<ul style="list-style: none; padding-left: 0; text-align: left;">
+						@foreach($actividadReciente as $actividad)
+							<li>{{ $actividad }}</li>
+						@endforeach
+					</ul>
+				@else
+					<p>No hay actividad reciente.</p>
+				@endif
+			</div>
+
+			<!-- Próximos eventos -->
+			<div class="card">
+				<h3>Próximos eventos</h3>
+				@if($proximosEventos->count())
+					<ul style="list-style: none; padding-left: 0; text-align: left;">
+						@foreach($proximosEventos as $evento)
+							<li>{{ \Carbon\Carbon::parse($evento->fecha)->format('d/m') }} - {{ $evento->nombre }}</li>
+						@endforeach
+					</ul>
+				@else
+					<p>No hay eventos próximos.</p>
+				@endif
+			</div>
+
+			<!-- Notificaciones -->
+			<div class="card">
+				<h3>Notificaciones</h3>
+				@foreach($notificaciones as $noti)
+					<p>{{ $noti }}</p>
+				@endforeach
+			</div>
+
+			<!-- Empleado del mes -->
+			<div class="card">
+				<h3>Empleado del mes</h3>
+				@if($empleadoDelMes)
+					<p>🎖️ {{ $empleadoDelMes->name }}</p>
+				@else
+					<p>No disponible</p>
+				@endif
+			</div>
+		</div>
+		
 </body>
 
+</html>
