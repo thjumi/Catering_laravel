@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
     });
 
     // Rutas de dashboards
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
     Route::prefix('dashboard')->group(function () {
         Route::get('/empleado', [DashboardController::class, 'empleado'])->name('dashboard.empleado');
         Route::get('/stock', [DashboardController::class, 'stock'])->name('dashboard.stock');
@@ -119,8 +121,8 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    
-   
+
+
 });
 Route::put('/tareas/{id}/actualizar-estado', [TareaController::class, 'actualizarEstado'])
     ->name('tareas.actualizarEstado')
