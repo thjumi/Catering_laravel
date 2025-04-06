@@ -106,7 +106,7 @@ Route::middleware('auth')->group(function () {
 
     // Rutas de insumos
     Route::prefix('insumos')->group(function () {
-        Route::middleware([Role::class . ':administrador'])->group(function () {
+        Route::middleware([Role::class . ':administrador, admistrador Stock'])->group(function () {
             Route::get('/', [InsumoController::class, 'index'])->name('insumos.index');
         });
 

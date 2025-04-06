@@ -18,16 +18,11 @@ class DashboardController extends Controller
         return view('dashboard.empleado', compact('tareasAsignadas'));
     }
 
-    // Obtener tareas según la fecha
-
-
-    // Función para mostrar el stock de insumos
     public function stock()
     {
-        $insumos = Insumo::all();  // Obtener todos los insumos
-        $eventos = Evento::all();  // Obtener todos los eventos
+        $insumos = Insumo::all();
 
-        return view('dashboard.stock', compact('insumos', 'eventos'));
+        return view('dashboard.stock', compact('insumos'));
     }
 
     // Función para el dashboard de administrador

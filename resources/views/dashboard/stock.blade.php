@@ -175,6 +175,14 @@
             <h2>Catering Soft</h2>
             <a href="{{ route('insumos.index') }}" class="active">Insumos</a>
         </div>
+        <a href="{{ route('logout') }}"
+				onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+				class="logout-button">
+				<i class='bx bx-log-out'></i> Cerrar Sesión
+			</a>
+			<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+				@csrf
+			</form>
         <div class="logo text-center">
             <img src="{{ asset('img/home/logp.png') }}" alt="Logo Catering Soft">
         </div>
@@ -192,10 +200,10 @@
                     <table class="table table-bordered table-hover align-middle">
                         <thead class="table-light text-center">
                             <tr>
-                                <th>Id</th>
+                                <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Cantidad</th>
-                                <th>acciones</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -240,3 +248,4 @@
 </body>
 
 </html>
+

@@ -1,88 +1,90 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight" style="
-            text-align: center;
-            font-size: 2rem;
-            color: #026b29;
-            font-weight: bold;
-            font-family: 'Poppins', sans-serif;">
-            {{ __('Lista de Insumos') }}
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Insumo</title>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Tu estilo incluido aquí */
+        /* (Pega aquí el CSS que me pasaste, por brevedad lo omito en esta respuesta) */
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="brand">
+            <img src="logo.png" alt="Logo">
+            <h4>Admin Stock</h4>
+        </div>
+        <ul class="side-menu">
+            <li class="active"><a href="#"><i class="bx bx-box"></i>Insumos</a></li>
+            <li><a href="#"><i class="bx bx-calendar"></i>Eventos</a></li>
+            <li><a href="#"><i class="bx bx-log-out"></i>Salir</a></li>
+        </ul>
+        <button class="logout-button">Cerrar Sesión</button>
+    </div>
 
-    <div class="py-12" style="
-        background: #f7f5f0;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg" style="
-                background: #fff;
-                border-radius: 12px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
-                <div class="p-6 text-gray-900 dark:text-gray-100" style="
-                    font-family: 'Poppins', sans-serif;">
-                    <h3 class="text-lg font-semibold" style="
-                        font-weight: bold;
-                        color: #d4af37;
-                        margin-bottom: 1.5rem;">Insumos disponibles</h3>
+    <div id="content">
+        <div class="navbar">
+            <i class="bx bx-menu" onclick="toggleSidebar()"></i>
+            <h2 class="text-gold">Editar Insumo</h2>
+        </div>
 
-                    <div class="overflow-x-auto" style="
-                        border-radius: 8px;
-                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);">
-                        <table class="w-full mt-6 border border-gray-300 border-collapse" style="
-                            background: #fff;
-                            border-radius: 8px;
-                            overflow: hidden;">
-                            <thead class="bg-gray-100 dark:bg-gray-700" style="
-                                background: #f5f0da;
-                                color: #d4af37;">
-                                <tr class="text-left text-gray-700 dark:text-gray-200">
-                                    <th class="px-4 py-2 border-b" style="
-                                        font-weight: bold;
-                                        text-align: center;">ID</th>
-                                    <th class="px-4 py-2 border-b" style="
-                                        font-weight: bold;
-                                        text-align: center;">Nombre</th>
-                                    <th class="px-4 py-2 border-b" style="
-                                        font-weight: bold;
-                                        text-align: center;">Descripción</th>
-                                    <th class="px-4 py-2 border-b" style="
-                                        font-weight: bold;
-                                        text-align: center;">Cantidad</th>
-                                    <th class="px-4 py-2 border-b" style="
-                                        font-weight: bold;
-                                        text-align: center;">Evento Asociado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($insumos as $insumo)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-600" style="
-                                        background: #fff;
-                                        border-bottom: 1px solid #d4af37;">
-                                        <td class="px-4 py-2 border-b" style="
-                                            text-align: center;">{{ $insumo->id }}</td>
-                                        <td class="px-4 py-2 border-b" style="
-                                            text-align: center;">{{ $insumo->nombre }}</td>
-                                        <td class="px-4 py-2 border-b" style="
-                                            text-align: center;">{{ $insumo->descripcion ?? 'Sin descripción' }}</td>
-                                        <td class="px-4 py-2 border-b" style="
-                                            text-align: center;">{{ $insumo->cantidad }}</td>
-                                        <td class="px-4 py-2 border-b" style="
-                                            text-align: center;">{{ optional($insumo->evento)->nombre ?? 'Sin evento' }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-4 py-2 text-center text-gray-500" style="
-                                            text-align: center;
-                                            font-style: italic;">No hay insumos registrados.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+        <div class="card" style="background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); max-width: 800px; margin: auto;">
+            <form method="POST" action="/insumos/actualizar/{{ $insumo->id }}">
+                @csrf
+                @method('PUT')
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="nombre" class="text-gold">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" value="{{ $insumo->nombre }}" class="form-control" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
                 </div>
-            </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="descripcion" class="text-gold">Descripción:</label>
+                    <textarea id="descripcion" name="descripcion" class="form-control" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">{{ $insumo->descripcion }}</textarea>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="cantidad" class="text-gold">Cantidad:</label>
+                    <input type="number" id="cantidad" name="cantidad" value="{{ $insumo->cantidad }}" class="form-control" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="stock" class="text-gold">Stock:</label>
+                    <input type="number" id="stock" name="stock" value="{{ $insumo->stock }}" required class="form-control" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="disponibilidad" class="text-gold">Disponible:</label>
+                    <select id="disponibilidad" name="disponibilidad" class="form-control" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                        <option value="1" {{ $insumo->disponibilidad ? 'selected' : '' }}>Sí</option>
+                        <option value="0" {{ !$insumo->disponibilidad ? 'selected' : '' }}>No</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="tipoInsumo" class="text-gold">Tipo de Insumo:</label>
+                    <input type="text" id="tipoInsumo" name="tipoInsumo" value="{{ $insumo->tipoInsumo }}" required class="form-control" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="lugarAlmacen" class="text-gold">Lugar de Almacenamiento:</label>
+                    <input type="text" id="lugarAlmacen" name="lugarAlmacen" value="{{ $insumo->lugarAlmacen }}" required class="form-control" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                </div>
+
+                <div style="text-align: right;">
+                    <button type="submit" class="btn-gold" style="padding: 10px 20px; border: none; border-radius: 8px;">Guardar cambios</button>
+                </div>
+            </form>
         </div>
     </div>
-</x-app-layout>
+
+    <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('hidden');
+            document.getElementById('content').classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>
