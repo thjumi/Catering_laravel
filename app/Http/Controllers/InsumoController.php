@@ -21,7 +21,7 @@ class InsumoController extends Controller
     {
         $usuarios = User::where('role', 'administrador Stock')->get();
         $eventos = Evento::all();
-        
+
         return view('insumos.create', compact('usuarios', 'eventos'));
     }
 
@@ -45,16 +45,37 @@ class InsumoController extends Controller
     public function index(Request $request)
     {
         $usuario = $request->user();
-
-        if ($usuario->role !== 'administrador' && $usuario->role !== 'administrador Stock') {
+        $rolUsuario = strtolower(trim($usuario->role));
+    
+        if ($rolUsuario !== 'administrador' && $rolUsuario !== 'administrador stock') {
             abort(403, 'No tienes permiso para ver los insumos.');
         }
+        
+        $query = Insumo::with('eventos');
 
-        // Trae los insumos con los eventos asociados
-        $insumos = Insumo::with('eventos')->get();
+        // Filtro por nombre
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->nombre . '%');
+        }
 
-        return view('insumos.index', compact('insumos'));
+        // Filtro por cantidad mínima
+        if ($request->filled('cantidad_minima')) {
+            $query->where('cantidad', '>=', $request->cantidad_minima);
+        }
+
+        // Filtro por evento asociado
+        if ($request->filled('evento')) {
+            $query->whereHas('eventos', function ($q) use ($request) {
+                $q->where('eventos.id', $request->evento);
+            });
+        }
+
+        $insumos = $query->get();
+        $eventos = Evento::all();
+
+        return view('insumos.index', compact('insumos', 'eventos'));
     }
+
 
     public function show($id, Request $request)
     {

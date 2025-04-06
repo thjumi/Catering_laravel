@@ -9,6 +9,9 @@
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
     <style>
         body {
             background-color: #f9f6f0;
@@ -48,9 +51,40 @@
         <div class="card card-custom p-4">
             <h2 class="gold-title fw-bold mb-4">Lista de Insumos</h2>
 
-            <h5 class="mb-3">Insumos disponibles:</h5>
-            <a href="{{ route('dashboard.admin') }}" class="btn btn-success ms-auto mb-3">Volver al Dashboard</a>
+            <a href="{{ route('dashboard.admin') }}" class="btn btn-success ms-auto mb-4">Volver al Dashboard</a>
 
+            <!-- Filtros -->
+            <form method="GET" action="{{ route('insumos.index') }}" class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label for="nombre" class="form-label">Buscar por nombre</label>
+                    <input type="text" name="nombre" id="nombre" class="form-control"
+                        value="{{ request('nombre') }}" placeholder="Ej: Arroz, Azúcar...">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="cantidad_minima" class="form-label">Cantidad mínima</label>
+                    <input type="number" name="cantidad_minima" id="cantidad_minima" class="form-control"
+                        value="{{ request('cantidad_minima') }}" min="0">
+                </div>
+
+                <div class="col-md-4">
+                    <label for="evento" class="form-label">Evento asociado</label>
+                    <select name="evento" id="evento" class="form-select">
+                        <option value="">-- Todos --</option>
+                        @foreach($eventos as $evento)
+                            <option value="{{ $evento->id }}" {{ request('evento') == $evento->id ? 'selected' : '' }}>
+                                {{ $evento->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-outline-success w-100">Filtrar</button>
+                </div>
+            </form>
+
+            <!-- Tabla de Insumos -->
             <div class="table-responsive">
                 <table class="table table-bordered table-striped align-middle">
                     <thead class="table-light">

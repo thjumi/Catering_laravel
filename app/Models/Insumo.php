@@ -21,7 +21,7 @@ class Insumo extends Model
         'stock'
     ];
 
-    public function evento()
+    public function eventos()
     {
         return $this->belongsToMany(Evento::class, 'insumo_evento')->withPivot('cantidad')->withTimestamps();
     }

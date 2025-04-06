@@ -21,7 +21,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 250px;
             background: #fff;
@@ -77,7 +76,6 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        /* Main content */
         .main {
             margin-left: 250px;
             padding: 2rem;
@@ -96,7 +94,6 @@
             text-align: center;
         }
 
-        /* Cards */
         .card h3 {
             font-size: 1.2rem;
             color: #d4af37;
@@ -109,7 +106,6 @@
             color: #444;
         }
 
-        /* Botón dorado */
         .btn-gold {
             background-color: #d4af37;
             color: white;
@@ -130,7 +126,6 @@
             color: #d4af37 !important;
         }
 
-        /* Botón toggle sidebar */
         .toggle-sidebar {
             display: none;
             position: absolute;
@@ -166,35 +161,47 @@
 </head>
 
 <body>
-    <!-- Botón colapsar -->
     <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
 
-    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div>
             <h2>Catering Soft</h2>
             <a href="{{ route('insumos.index') }}" class="active">Insumos</a>
         </div>
         <a href="{{ route('logout') }}"
-				onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-				class="logout-button">
-				<i class='bx bx-log-out'></i> Cerrar Sesión
-			</a>
-			<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-				@csrf
-			</form>
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+            class="logout-button">
+            <i class='bx bx-log-out'></i> Cerrar Sesión
+        </a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
         <div class="logo text-center">
             <img src="{{ asset('img/home/logp.png') }}" alt="Logo Catering Soft">
         </div>
     </div>
 
-    <!-- Contenido principal -->
     <div class="main" id="main">
         <h1>Gestión de Inventario</h1>
 
         <div class="card shadow mb-5">
             <div class="card-body">
                 <h3 class="mb-4 text-gold">Lista de Insumos</h3>
+
+                <!-- Filtros -->
+                <form method="GET" action="{{ route('insumos.index') }}" class="row g-3 mb-4">
+                    <div class="col-md-5">
+                        <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre"
+                            value="{{ request('nombre') }}">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="number" name="cantidad_minima" class="form-control" placeholder="Cantidad mínima"
+                            value="{{ request('cantidad_minima') }}">
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn-gold">Filtrar</button>
+                    </div>
+                </form>
 
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover align-middle">
@@ -207,23 +214,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($insumos as $insumo)
-                                <tr>
-                                    <td class="text-center">{{ $insumo->id }}</td>
-                                    <td>{{ $insumo->nombre }}</td>
-                                    <td class="text-center">{{ $insumo->cantidad }}</td>
-                                    <td class="text-center">
-                                        <a href="{{ route('insumos.edit', $insumo) }}"
-                                            class="btn btn-sm btn-outline-warning">Editar</a>
-                                        <form action="{{ route('insumos.destroy', $insumo) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @forelse($insumos as $insumo)
+                            <tr>
+                                <td class="text-center">{{ $insumo->id }}</td>
+                                <td>{{ $insumo->nombre }}</td>
+                                <td class="text-center">{{ $insumo->cantidad }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('insumos.edit', $insumo->id) }}" class="btn btn-sm btn-outline-warning">Editar</a>
+                                    <form action="{{ route('insumos.destroy', $insumo->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Estás segura de que deseas eliminar este insumo?')">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No hay insumos registrados.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

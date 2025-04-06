@@ -25,7 +25,6 @@ class DashboardController extends Controller
         return view('dashboard.stock', compact('insumos'));
     }
 
-    // Función para el dashboard de administrador
     public function admin()
     {
         $eventos = Evento::all();
@@ -34,29 +33,42 @@ class DashboardController extends Controller
         $totalEmpleados = User::where('role', 'empleado')->count();
         $tareasPendientes = Tarea::where('estado', 'pendiente')->count();
         $totalInsumos = Insumo::count();
-    
-        $actividadReciente = [
-            optional(Tarea::latest()->first()) ? '✅ Tarea "' . Tarea::latest()->first()->nombre . '" completada' : null,
-            optional(Evento::latest()->first()) ? '📅 Evento "' . Evento::latest()->first()->nombre . '" añadido' : null,
-            optional(User::where('role', 'empleado')->latest()->first()) ? '➕ Empleado "' . User::where('role', 'empleado')->latest()->first()->name . '" agregado' : null,
-        ];
-        $actividadReciente = array_filter($actividadReciente);
-    
-        // Próximos eventos
+
+        // Actividad reciente
+        $ultimaTarea = Tarea::latest()->first();
+        $ultimoEvento = Evento::latest()->first();
+        $ultimoEmpleado = User::where('role', 'empleado')->latest()->first();
+
+        $actividadReciente = [];
+
+        if ($ultimaTarea) {
+            $actividadReciente[] = '✅ Tarea "' . $ultimaTarea->nombre . '" creada';
+        }
+
+        if ($ultimoEvento) {
+            $actividadReciente[] = '📅 Evento "' . $ultimoEvento->nombre . '" añadido';
+        }
+
+        if ($ultimoEmpleado) {
+            $actividadReciente[] = '➕ Empleado "' . $ultimoEmpleado->name . '" agregado';
+        }
+
         $proximosEventos = Evento::where('fecha', '>=', now())
+            ->whereNotNull('nombre')
+            ->whereNotNull('fecha')
             ->orderBy('fecha')
             ->take(3)
             ->get();
 
+   
         $notificaciones = [
             '📌 Recuerda asignar tareas para el evento del viernes.',
-            '📌 Asignar a Sebastian a el evento del 20/06/25'
-            
+            '📌 Asignar a Sebastian al evento del 20/06/25'
         ];
+
     
-        // Empleado del mes (puede mejorarse luego con métricas reales)
         $empleadoDelMes = User::where('role', 'empleado')->inRandomOrder()->first();
-    
+
         return view('dashboard.admin', compact(
             'eventos',
             'totalTareas',
@@ -70,5 +82,4 @@ class DashboardController extends Controller
             'empleadoDelMes'
         ));
     }
-    
 }

@@ -18,6 +18,24 @@ use Illuminate\Support\Facades\Route;
 
 // Página de bienvenida
 Route::get('/', fn() => view('welcome'));
+// Rutas de dashboards
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+Route::prefix('dashboard')->group(function () {
+    // Dashboard para empleados
+    Route::get('/empleado', [DashboardController::class, 'empleado'])->name('dashboard.empleado');
+    
+    // Dashboard para administrador normal (exclusivo para el rol "administrador")
+    Route::get('/admin', [DashboardController::class, 'admin'])
+         ->name('dashboard.admin')
+         ->middleware([Role::class . ':administrador']);
+
+    // Dashboard para administrador Stock (exclusivo para el rol "administrador Stock")
+    Route::get('/stock', [DashboardController::class, 'stock'])
+         ->name('dashboard.stock')
+         ->middleware([Role::class . ':administrador Stock']);
+});
+
 
 // Rutas de autenticación
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -50,7 +68,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('dashboard')->group(function () {
         Route::get('/empleado', [DashboardController::class, 'empleado'])->name('dashboard.empleado');
-        Route::get('/stock', [DashboardController::class, 'stock'])->name('dashboard.stock');
+        // Solo para administradores (admin de stock no tendrá acceso aquí)
         Route::get('/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
     });
 
@@ -58,22 +76,20 @@ Route::middleware('auth')->group(function () {
     Route::prefix('tareas')->group(function () {
         Route::get('/', [TareaController::class, 'index'])->name('tareas.index');
 
-        // Rutas específicas primero para evitar conflictos con dinámicas
+        // Rutas específicas para administradores
         Route::middleware([Role::class . ':administrador'])->group(function () {
             Route::get('/create', [TareaController::class, 'create'])->name('tareas.create');
             Route::post('/', [TareaController::class, 'store'])->name('tareas.store');
             Route::get('/{id}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
             Route::put('/{id}', [TareaController::class, 'update'])->name('tareas.update');
             Route::delete('/{id}', [TareaController::class, 'destroy'])->name('tareas.destroy');
-            Route::delete('/tareas/{id}', [TareaController::class, 'destroy'])->name('tareas.delete');
-
         });
 
-        // Ruta dinámica al final
+        // Ruta dinámica para mostrar tarea (al final)
         Route::get('/{id}', [TareaController::class, 'show'])->name('tareas.show');
     });
 
-    // Rutas de empleados (solo administradores)
+    // Rutas de empleados (solo administradores para acciones de gestión)
     Route::prefix('empleados')->group(function () {
         Route::middleware([Role::class . ':administrador'])->group(function () {
             Route::get('/create', [EmpleadoController::class, 'create'])->name('empleados.create');
@@ -88,15 +104,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}', [EmpleadoController::class, 'show'])->name('empleados.show');
     });
 
-    // Rutas de eventos
+    // Rutas de eventos (solo administradores)
     Route::prefix('eventos')->group(function () {
-        Route::middleware([Role::class . ':administrador, administrador Stock'])->group(function () {
+        Route::middleware([Role::class . ':administrador'])->group(function () {
             Route::get('/create', [EventoController::class, 'create'])->name('eventos.create');
             Route::post('/', [EventoController::class, 'store'])->name('eventos.store');
             Route::get('/{id}/edit', [EventoController::class, 'edit'])->name('eventos.edit');
             Route::put('/{id}', [EventoController::class, 'update'])->name('eventos.update');
             Route::delete('/{id}', [EventoController::class, 'destroy'])->name('eventos.destroy');
-
         });
 
         // Ruta para obtener eventos por fecha (ejemplo para empleados)
@@ -108,10 +123,12 @@ Route::middleware('auth')->group(function () {
 
     // Rutas de insumos
     Route::prefix('insumos')->group(function () {
-        Route::middleware([Role::class . ':administrador, admistrador Stock'])->group(function () {
-            Route::get('/', [InsumoController::class, 'index'])->name('insumos.index');
-        });
+        // Ruta pública: listado de insumos accesible para administrador normal y administrador Stock
+        Route::get('/', [InsumoController::class, 'index'])
+            ->name('insumos.index')
+            ->middleware([Role::class . ':administrador, administrador Stock']);
 
+        // Rutas para gestión (solo administrador Stock)
         Route::middleware([Role::class . ':administrador Stock'])->group(function () {
             Route::get('/create', [InsumoController::class, 'create'])->name('insumos.create');
             Route::post('/', [InsumoController::class, 'store'])->name('insumos.store');
@@ -120,10 +137,8 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
         });
     });
-
-
-
 });
+
 Route::put('/tareas/{id}/actualizar-estado', [TareaController::class, 'actualizarEstado'])
     ->name('tareas.actualizarEstado')
-    ->middleware(['auth', 'role:Administrador']);
+    ->middleware(['auth', Role::class . ':administrador']);
