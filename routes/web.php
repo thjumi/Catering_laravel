@@ -130,6 +130,9 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+
+Route::delete('/tareas/{id}', [TareaController::class, 'destroy'])->name('tareas.delete');
+
 Route::put('/tareas/{id}/actualizar-estado', [TareaController::class, 'actualizarEstado'])
     ->name('tareas.actualizarEstado')
     ->middleware(['auth', Role::class . ':administrador']);

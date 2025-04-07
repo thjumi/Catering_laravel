@@ -91,7 +91,7 @@ class TareaController extends Controller
             'descripcion' => 'nullable|string|min:10|max:255',
             'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
-            'evento_id'   => 'required|exists:eventos,id',
+            'evento_id'   => 'nullable|exists:eventos,id',
             'estado'      => 'required|in:Pendiente,En Proceso,Completada',
         ]);
 
@@ -117,7 +117,7 @@ class TareaController extends Controller
             'descripcion' => 'nullable|string',
             'fechaTarea'  => 'required|date',
             'empleado_id' => 'required|exists:users,id',
-            'evento_id'   => 'required|exists:eventos,id',
+            'evento_id'   => 'nullable|exists:eventos,id',
             'estado'      => 'required|in:Pendiente,En Proceso,Completada',
         ]);
 

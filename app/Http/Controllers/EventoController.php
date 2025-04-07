@@ -58,7 +58,7 @@ class EventoController extends Controller
             'nombre' => 'required|string|min:10|max:40',
             'descripcion' => 'nullable|string|min:10|max:250',
             'fecha' => 'required|date',
-            'horario' => 'required|date_format:H:i', // sin "A"
+            'horario' => 'required|date_format:H:i',
             'num_invitados' => 'required|numeric|min:1',
             'usuario_id' => 'required|exists:users,id',
         ]);
