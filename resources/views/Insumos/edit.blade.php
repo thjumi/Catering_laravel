@@ -7,80 +7,109 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background: #f7f5f0;
+            background: #f4f6f8;
             font-family: 'Poppins', sans-serif;
+            margin: 0;
             padding: 2rem;
         }
 
         h2 {
             text-align: center;
-            font-size: 2rem;
-            color: #026b29;
-            font-weight: bold;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .container {
-            background: #f7f5f0;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            max-width: 1200px;
-            margin: 2rem auto;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h3 {
-            font-weight: bold;
-            color: #d4af37;
+            font-size: 2.2rem;
+            color: #2e7d32;
             margin-bottom: 1.5rem;
         }
 
-        table {
+        .container {
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            font-weight: 600;
+            color: #fbc02d;
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #333;
+        }
+
+        .form-control,
+        .form-select {
             width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 0.75rem 1rem;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
         }
 
-        thead {
-            background: #f5f0da;
-            color: #d4af37;
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #4caf50;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
         }
 
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #d4af37;
+        .mb-3,
+        .mb-4 {
+            margin-bottom: 1.5rem;
         }
 
-        tbody tr:hover {
-            background-color: #f9f9f9;
+        .text-end {
+            text-align: right;
         }
 
-        .empty-row {
-            text-align: center;
-            font-style: italic;
-            color: #888;
+        .btn {
+            background-color: #fbc02d;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #f9a825;
+        }
+
+        .alert {
+            padding: 1rem;
+            background-color: #ffcdd2;
+            color: #c62828;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+
+        select option[selected] {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="container py-5">
+    <div class="container">
         <div class="card card-custom">
-            <h2 class="mb-4 title-gold">Editar Insumo</h2>
+            <h2>Editar Insumo</h2>
 
-             {{-- Mostrar mensajes de error --}}
-             @if ($errors->any())
-                <div class="alert alert-danger">
+            {{-- Mostrar mensajes de error --}}
+            @if ($errors->any())
+                <div class="alert">
                     <ul class="mb-0">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -136,13 +165,15 @@
                     <select class="form-select" name="evento_id" id="evento_id">
                         <option value="">-- Selecciona un evento --</option>
                         @foreach($eventos as $evento)
-                            <option value="{{ $evento->id }}">{{ $evento->nombre }}  {{ old('evento_id', $evento->id) == $insumo->evento_id ? 'selected' : '' }}</option>
+                            <option value="{{ $evento->id }}" {{ old('evento_id', $evento->id) == $insumo->evento_id ? 'selected' : '' }}>
+                                {{ $evento->nombre }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="text-end">
-                    <button type="submit" class="btn btn-gold px-4 py-2">Editar Insumo</button>
+                    <button type="submit" class="btn">Editar Insumo</button>
                 </div>
             </form>
         </div>
