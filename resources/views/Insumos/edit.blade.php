@@ -74,40 +74,77 @@
     </style>
 </head>
 <body>
-    <h2>Lista de Insumos</h2>
+    <div class="container py-5">
+        <div class="card card-custom">
+            <h2 class="mb-4 title-gold">Editar Insumo</h2>
 
-    <div class="container">
-        <div class="card">
-            <h3>Insumos disponibles</h3>
+             {{-- Mostrar mensajes de error --}}
+             @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Cantidad</th>
-                            <th>Evento Asociado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($insumos as $insumo)
-                            <tr>
-                                <td>{{ $insumo->id }}</td>
-                                <td>{{ $insumo->nombre }}</td>
-                                <td>{{ $insumo->descripcion ?? 'Sin descripción' }}</td>
-                                <td>{{ $insumo->cantidad }}</td>
-                                <td>{{ optional($insumos->eventos)->nombre ?? 'Sin evento' }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="empty-row">No hay insumos registrados.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            <form action="{{ route('insumos.update', $insumo->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" name="nombre" id="nombre" value="{{ $insumo->nombre }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <textarea class="form-control" name="descripcion" id="descripcion" rows="3">{{ old('descripcion', $insumo->descripcion) }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="cantidad" class="form-label">Cantidad:</label>
+                    <input type="number" class="form-control" name="cantidad" id="cantidad" value="{{ $insumo->cantidad }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock:</label>
+                    <input type="number" class="form-control" name="stock" id="stock" value="{{ $insumo->stock }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="disponibilidad" class="form-label">Disponibilidad:</label>
+                    <select class="form-select" name="disponibilidad" id="disponibilidad">
+                        <option value="1"  {{ $insumo->disponibilidad === '1' ? 'selected' : '' }}>Disponible</option>
+                        <option value="0"  {{ $insumo->disponibilidad === '0' ? 'selected' : '' }}>No Disponible</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="tipoInsumo" class="form-label">Tipo de Insumo:</label>
+                    <input type="text" class="form-control" name="tipoInsumo" id="tipoInsumo" required value="{{ $insumo->tipoInsumo }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="lugarAlmacen" class="form-label">Lugar de Almacenamiento:</label>
+                    <input type="text" class="form-control" name="lugarAlmacen" id="lugarAlmacen" required value="{{ $insumo->lugarAlmacen }}">
+                </div>
+
+                <div class="mb-4">
+                    <label for="evento_id" class="form-label">Asignar a Evento:</label>
+                    <select class="form-select" name="evento_id" id="evento_id">
+                        <option value="">-- Selecciona un evento --</option>
+                        @foreach($eventos as $evento)
+                            <option value="{{ $evento->id }}">{{ $evento->nombre }}  {{ old('evento_id', $evento->id) == $insumo->evento_id ? 'selected' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-gold px-4 py-2">Editar Insumo</button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

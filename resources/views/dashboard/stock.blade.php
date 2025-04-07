@@ -189,7 +189,7 @@
                 <h3 class="mb-4 text-gold">Lista de Insumos</h3>
 
                 <!-- Filtros -->
-                <form method="GET" action="{{ route('insumos.index') }}" class="row g-3 mb-4">
+                <form method="GET" action="{{ route('dashboard.stock') }}" class="row g-3 mb-4">
                     <div class="col-md-5">
                         <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre"
                             value="{{ request('nombre') }}">

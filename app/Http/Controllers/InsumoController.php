@@ -17,40 +17,15 @@ class InsumoController extends Controller
         $this->insumoService = $insumoService;
     }
 
-    public function create()
-    {
-        $usuarios = User::where('role', 'administrador Stock')->get();
-        $eventos = Evento::all();
-
-        return view('insumos.create', compact('usuarios', 'eventos'));
-    }
-
-    public function edit($id)
-    {
-        $usuario = request()->user();
-
-        if ($usuario->role !== 'administrador Stock') {
-            abort(403, 'No tienes permisos para editar insumos.');
-        }
-
-        $insumo = $this->insumoService->getInsumoById($id, $usuario);
-
-        if (!$insumo) {
-            abort(404, 'El insumo no fue encontrado.');
-        }
-
-        return view('insumos.edit', compact('insumo'));
-    }
-
     public function index(Request $request)
     {
         $usuario = $request->user();
         $rolUsuario = strtolower(trim($usuario->role));
-    
+
         if ($rolUsuario !== 'administrador' && $rolUsuario !== 'administrador stock') {
             abort(403, 'No tienes permiso para ver los insumos.');
         }
-        
+
         $query = Insumo::with('eventos');
 
         // Filtro por nombre
@@ -76,6 +51,13 @@ class InsumoController extends Controller
         return view('insumos.index', compact('insumos', 'eventos'));
     }
 
+    public function create()
+    {
+        $usuarios = User::where('role', 'administrador Stock')->get();
+        $eventos = Evento::all();
+
+        return view('insumos.create', compact('usuarios', 'eventos'));
+    }
 
     public function show($id, Request $request)
     {
@@ -113,6 +95,24 @@ class InsumoController extends Controller
         return redirect()->route('dashboard.stock');
     }
 
+    public function edit($id)
+    {
+        $usuario = request()->user();
+
+        if ($usuario->role !== 'administrador Stock') {
+            abort(403, 'No tienes permisos para editar insumos.');
+        }
+
+        $insumo = $this->insumoService->getInsumoById($id, $usuario);
+        $eventos = Evento::all();
+
+        if (!$insumo) {
+            abort(404, 'El insumo no fue encontrado.');
+        }
+
+        return view('insumos.edit', compact('insumo', 'eventos'));
+    }
+
     public function update($id, Request $request)
     {
         $usuario = $request->user();
@@ -133,7 +133,7 @@ class InsumoController extends Controller
 
         $insumo = $this->insumoService->updateInsumo($id, $data, $usuario);
 
-        return redirect()->route('insumos.index');
+        return redirect()->route('dashboard.stock');
     }
 
     public function destroy($id, Request $request)
@@ -146,7 +146,7 @@ class InsumoController extends Controller
 
         $this->insumoService->deleteInsumo($id, $usuario);
 
-        return redirect()->route('insumos.index');
+        return redirect()->route('dashboard.stock');
     }
 
     public function asignarAEvento(Request $request, $insumoId, $eventoId)

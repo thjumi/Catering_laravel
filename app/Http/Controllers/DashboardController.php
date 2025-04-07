@@ -18,9 +18,28 @@ class DashboardController extends Controller
         return view('dashboard.empleado', compact('tareasAsignadas'));
     }
 
-    public function stock()
+    public function stock(Request $request)
     {
-        $insumos = Insumo::all();
+        $usuario = $request->user();
+        $rolUsuario = strtolower(trim($usuario->role));
+
+        if ($rolUsuario !== 'administrador' && $rolUsuario !== 'administrador stock') {
+            abort(403, 'No tienes permiso para ver los insumos.');
+        }
+
+        $query = Insumo::all();
+
+        // Filtro por nombre
+        if ($request->filled('nombre')) {
+            $query = Insumo::where('nombre', 'LIKE', '%' .  $request->nombre . '%')->get();
+        }
+
+        // Filtro por cantidad mínima
+        if ($request->filled('cantidad_minima')) {
+            $query = $query->where('cantidad', '>=', $request->cantidad_minima);
+        }
+
+        $insumos = $query;
 
         return view('dashboard.stock', compact('insumos'));
     }
@@ -60,13 +79,13 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-   
+
         $notificaciones = [
             '📌 Recuerda asignar tareas para el evento del viernes.',
             '📌 Asignar a Sebastian al evento del 20/06/25'
         ];
 
-    
+
         $empleadoDelMes = User::where('role', 'empleado')->inRandomOrder()->first();
 
         return view('dashboard.admin', compact(

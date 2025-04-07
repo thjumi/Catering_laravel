@@ -24,7 +24,7 @@ Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashb
 Route::prefix('dashboard')->group(function () {
     // Dashboard para empleados
     Route::get('/empleado', [DashboardController::class, 'empleado'])->name('dashboard.empleado');
-    
+
     // Dashboard para administrador normal (exclusivo para el rol "administrador")
     Route::get('/admin', [DashboardController::class, 'admin'])
          ->name('dashboard.admin')
@@ -61,15 +61,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    });
-
-    // Rutas de dashboards
-    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-
-    Route::prefix('dashboard')->group(function () {
-        Route::get('/empleado', [DashboardController::class, 'empleado'])->name('dashboard.empleado');
-        // Solo para administradores (admin de stock no tendrá acceso aquí)
-        Route::get('/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
     });
 
     // Rutas de tareas
@@ -126,7 +117,7 @@ Route::middleware('auth')->group(function () {
         // Ruta pública: listado de insumos accesible para administrador normal y administrador Stock
         Route::get('/', [InsumoController::class, 'index'])
             ->name('insumos.index')
-            ->middleware([Role::class . ':administrador, administrador Stock']);
+            ->middleware([Role::class . ':administrador, :administrador Stock']);
 
         // Rutas para gestión (solo administrador Stock)
         Route::middleware([Role::class . ':administrador Stock'])->group(function () {
