@@ -11,21 +11,32 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Los atributos que se asignan de forma masiva.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role', // Para diferenciar entre admin, empleado, etc.
+        'role',     // Agregado si se requiere asignación masiva
+        'subrole',  // Agregado si se requiere asignación masiva
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Los atributos que no se asignan de forma masiva.
      *
-     * @var list<string>
+     * @var array<int, string>
+     */
+    // Si deseas evitar la asignación masiva de role y subrole, puedes usar guarded:
+    // protected $guarded = ['role', 'subrole'];
+    // De lo contrario, puedes dejarlo vacío:
+    // protected $guarded = [];
+
+    /**
+     * Los atributos que se deben ocultar para la serialización.
+     *
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -33,31 +44,20 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Los atributos que deben ser convertidos a tipos nativos.
      *
      * @var array<string, string>
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
     ];
 
-    /**
-     * Relación con el modelo Administrador.
-     */
     public function administrador()
     {
         return $this->hasOne(Administrador::class);
     }
-
-    public function empleado()
-    {
-        return $this->hasOne(Empleado::class);
-    }
-
-    /**
-     * Verifica si el usuario tiene el rol especificado.
-     */
+  
     public function hasRole($role)
     {
         return $this->role === $role;

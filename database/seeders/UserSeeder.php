@@ -10,38 +10,79 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'name' => 'Administrador',
+            'name' => 'Bivian Cruz',
             'email' => 'admin@example.com',
             'password' => bcrypt('admin12345'),
-            'telefono' =>'3112779085',
-            'rol' => 'administrador',
+            'role' => 'administrador',
         ]);
 
         User::create([
-            'name' => 'AdministradorStock',
+            'name' => 'Julieth Gómez',
             'email' => 'stock@example.com',
             'password' => bcrypt('stock12345'),
-            'telefono' =>'3138790865',
-            'rol' => 'administrador stock',
+            'role' => 'administrador stock',
         ]);
 
         User::create([
-            'name' => 'chef',
-            'email' => 'chef@example.com',
+            'name' => 'Sebastián Barragán',
+            'email' => 'sebas@example.com',
             'password' => bcrypt('empleado12345'),
-            'telefono' =>'3008795643',
-            'rol' => 'empleado',
-            'subrol' =>'Chef',
+            'role' => 'empleado',
+            'subrole' =>'Chef',
         ]);
         User::create([
-            'name' => 'chef',
-            'email' => 'chef@example.com',
+            'name' => 'Sleider Rodriguez',
+            'email' => 'sleider@example.com',
             'password' => bcrypt('empleado12345'),
-            'telefono' =>'3187098693',
-            'rol' => 'empleado',
-            'subrol' =>'mesero',
+            'role' => 'empleado',
+            'subrole' =>'mesero',
         ]);
-       
+
+        User::create([
+            'name' => 'Jasinta Romero',
+            'email' => 'jas@example.com',
+            'password' => bcrypt('empleado12345'),
+            'role' => 'empleado',
+            'subrole' =>'Chef',
+        ]);
+        User::create([
+            'name' => 'Rodrigo Sanchez',
+            'email' => 'rodrif@example.com',
+            'password' => bcrypt('empleado12345'),
+            'role' => 'empleado',
+            'subrole' =>'mesero',
+        ]);
+
+        User::create([
+            'name' => 'Laura Areas',
+            'email' => 'Laura@example.com',
+            'password' => bcrypt('empleado12345'),
+            'role' => 'empleado',
+            'subrole' =>'Chef',
+        ]);
+        User::create([
+            'name' => 'Brunno Ucampo',
+            'email' => 'Brunno@example.com',
+            'password' => bcrypt('empleado12345'),
+            'role' => 'empleado',
+            'subrole' =>'mesero',
+        ]);
+
+        User::create([
+            'name' => 'Angelica Santamaría',
+            'email' => 'angel@example.com',
+            'password' => bcrypt('empleado12345'),
+            'role' => 'empleado',
+            'subrole' =>'Chef',
+        ]);
+        User::create([
+            'name' => 'Oscar DLeon',
+            'email' => 'oscar@example.com',
+            'password' => bcrypt('empleado12345'),
+            'role' => 'empleado',
+            'subrole' =>'mesero',
+        ]);
+
     }
 }
 

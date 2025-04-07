@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('eventos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('descripcion');
+            $table->text('descripcion');
             $table->date('fecha');
+            $table->time('horario');
             $table->integer('num_invitados');
+            $table->foreignId('administrador_id')->constrained('administradores');
+            $table->foreignId('empleado_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

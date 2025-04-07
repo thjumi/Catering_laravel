@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('evento_empleados', function (Blueprint $table) {
             $table->id();
             $table->foreignId('evento_id')->constrained('eventos');
-            $table->foreignId('empleado_id')->constrained('empleados');
+            $table->foreignId('empleado_id')->constrained('users');
             $table->string('rol_empleado');
             $table->timestamps();
         });
