@@ -11,7 +11,22 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    // Función para mostrar las tareas asignadas a un empleado
+    public function dashboard()
+{
+    $user = Auth::user();
+
+    switch ($user->role) {
+        case 'administrador':
+            return redirect()->route('dashboard.admin');
+        case 'administrador Stock':
+            return redirect()->route('dashboard.stock');
+        case 'empleado':
+            return redirect()->route('dashboard.empleado');
+        default:
+            abort(403, 'Acceso no autorizado');
+    }
+}
+
     public function empleado()
     {
         $tareasAsignadas = Tarea::with('evento')->where('empleado_id', Auth::id())->paginate(10);
